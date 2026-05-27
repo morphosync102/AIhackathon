@@ -1,8 +1,10 @@
 import { createServer } from "node:http";
+import { createHash } from "node:crypto";
 import { appendFile, mkdir, readFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
 
+const envSources = {};
 loadEnvFile(".env");
 loadEnvFile(".env.local");
 
@@ -41,6 +43,7 @@ function loadEnvFile(path) {
 
     if (key && process.env[key] === undefined) {
       process.env[key] = value;
+      envSources[key] = path;
     }
   }
 }
@@ -142,6 +145,28 @@ function validateAnalysis(payload) {
   };
 }
 
+function getKeyDiagnostics() {
+  if (!apiKey) {
+    return {
+      hasApiKey: false,
+      apiKeySource: null,
+      keyLength: 0,
+      keyFingerprint: null,
+      looksLikeAiStudioKey: false,
+    };
+  }
+
+  return {
+    hasApiKey: true,
+    apiKeySource: process.env.GEMINI_API_KEY
+      ? envSources.GEMINI_API_KEY || "process:GEMINI_API_KEY"
+      : envSources.GOOGLE_API_KEY || "process:GOOGLE_API_KEY",
+    keyLength: apiKey.length,
+    keyFingerprint: createHash("sha256").update(apiKey).digest("hex").slice(0, 10),
+    looksLikeAiStudioKey: apiKey.startsWith("AIza"),
+  };
+}
+
 function createGeminiError(status, detail) {
   let publicMessage = "Gemini API request failed";
 
@@ -149,14 +174,18 @@ function createGeminiError(status, detail) {
     const payload = JSON.parse(detail);
     const reason = payload?.error?.status || payload?.error?.message || "";
     if (status === 429 || reason.includes("RESOURCE_EXHAUSTED")) {
-      publicMessage = "Gemini API quota exceeded";
+      publicMessage =
+        "Gemini API generation is not available for this key or project";
     } else if (status === 400) {
       publicMessage = "Gemini API rejected the request";
     } else if (status === 403) {
       publicMessage = "Gemini API key does not have access";
     }
   } catch {
-    if (status === 429) publicMessage = "Gemini API quota exceeded";
+    if (status === 429) {
+      publicMessage =
+        "Gemini API generation is not available for this key or project";
+    }
   }
 
   const error = new Error(publicMessage);
@@ -179,8 +208,7 @@ async function analyzeWithGemini(text) {
     await logEvent("info", "Calling Gemini API", {
       model,
       inputLength: text.length,
-      hasGeminiKey: Boolean(process.env.GEMINI_API_KEY),
-      hasGoogleKey: Boolean(process.env.GOOGLE_API_KEY),
+      ...getKeyDiagnostics(),
     });
 
     const response = await fetch(
@@ -255,7 +283,7 @@ const server = createServer(async (request, response) => {
       ok: true,
       provider: "gemini",
       model,
-      hasApiKey: Boolean(apiKey),
+      ...getKeyDiagnostics(),
       logFile,
     });
     return;
@@ -290,7 +318,7 @@ server.listen(port, "127.0.0.1", async () => {
   await logEvent("info", "API server started", {
     url: `http://127.0.0.1:${port}`,
     model,
-    hasApiKey: Boolean(apiKey),
+    ...getKeyDiagnostics(),
     logFile,
   });
   console.log(`API server running at http://127.0.0.1:${port}`);

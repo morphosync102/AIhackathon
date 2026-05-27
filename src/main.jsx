@@ -134,8 +134,8 @@ function App() {
       setErrorMessage(
         error.message.includes("GEMINI_API_KEY")
           ? "GEMINI_API_KEY が未設定のため、デモ用結果を表示しています。"
-          : error.message.includes("quota")
-            ? "Gemini API の利用上限に達しているため、デモ用結果を表示しています。"
+          : error.message.includes("generation is not available")
+            ? "キーは読めていますが、このキー/プロジェクトでは Gemini 生成API が使えないため、デモ用結果を表示しています。"
           : "Gemini API に接続できないため、デモ用結果を表示しています。",
       );
       setStatus("degraded");
