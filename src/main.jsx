@@ -27,7 +27,7 @@ const samples = [
   },
 ];
 
-function analyze(text) {
+function createFallbackAnalysis(text) {
   const trimmed = text.trim();
   const lengthScore = Math.min(32, Math.floor(trimmed.length / 4));
   const urgency =
@@ -47,6 +47,7 @@ function analyze(text) {
   return {
     score,
     theme,
+    summary: "Gemini API が使えない場合のデモ用フォールバック結果です。",
     insight:
       "課題は情報不足よりも、次の一歩が見えにくいことにあります。AIは状況を分解し、判断理由つきで優先順位を提示できます。",
     actions: [
@@ -58,28 +59,78 @@ function analyze(text) {
       "利用者の前提が違うと提案の精度が下がる",
       "効果測定の指標がないと改善判断が曖昧になる",
     ],
+    provider: "fallback",
   };
+}
+
+function normalizeResult(payload, fallback) {
+  return {
+    score: Number.isFinite(payload?.score) ? payload.score : fallback.score,
+    theme: payload?.theme || fallback.theme,
+    summary: payload?.summary || fallback.summary,
+    insight: payload?.insight || payload?.reasoning || fallback.insight,
+    actions: Array.isArray(payload?.actions) && payload.actions.length
+      ? payload.actions.slice(0, 4)
+      : fallback.actions,
+    risks: Array.isArray(payload?.risks) && payload.risks.length
+      ? payload.risks.slice(0, 3)
+      : fallback.risks,
+    provider: payload?.provider || "gemini",
+  };
+}
+
+async function requestAnalysis(text) {
+  const fallback = createFallbackAnalysis(text);
+
+  const response = await fetch("/api/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text }),
+  });
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(message || "AI analysis failed");
+  }
+
+  const payload = await response.json();
+  return normalizeResult(payload, fallback);
 }
 
 function App() {
   const [input, setInput] = useState(samples[0].text);
-  const [result, setResult] = useState(() => analyze(samples[0].text));
+  const [result, setResult] = useState(() =>
+    createFallbackAnalysis(samples[0].text),
+  );
   const [status, setStatus] = useState("ready");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const canAnalyze = input.trim().length >= 20 && status !== "loading";
   const charCount = useMemo(() => input.trim().length, [input]);
 
-  function runDemo() {
+  async function runDemo() {
     if (!canAnalyze) {
       setStatus("error");
+      setErrorMessage("20文字以上の課題メモを入力してください。");
       return;
     }
 
     setStatus("loading");
-    window.setTimeout(() => {
-      setResult(analyze(input));
+    setErrorMessage("");
+
+    try {
+      const nextResult = await requestAnalysis(input);
+      setResult(nextResult);
       setStatus("ready");
-    }, 850);
+    } catch (error) {
+      setResult(createFallbackAnalysis(input));
+      setErrorMessage(
+        error.message.includes("GEMINI_API_KEY")
+          ? "GEMINI_API_KEY が未設定のため、デモ用結果を表示しています。"
+          : "Gemini API に接続できないため、デモ用結果を表示しています。",
+      );
+      setStatus("degraded");
+    }
   }
 
   return (
@@ -105,7 +156,8 @@ function App() {
                 type="button"
                 onClick={() => {
                   setInput(sample.text);
-                  setResult(analyze(sample.text));
+                  setResult(createFallbackAnalysis(sample.text));
+                  setErrorMessage("");
                   setStatus("ready");
                 }}
               >
@@ -120,7 +172,7 @@ function App() {
           <div className="panel-heading">
             <div>
               <p className="label">Input</p>
-              <h2>課題メモを AI に渡す</h2>
+              <h2>課題メモを Gemini に渡す</h2>
             </div>
             <span className="counter">{charCount} chars</span>
           </div>
@@ -131,10 +183,10 @@ function App() {
             placeholder="課題、対象ユーザー、困っている状況を入力してください。"
           />
 
-          {status === "error" && (
-            <div className="notice error">
+          {(status === "error" || status === "degraded") && (
+            <div className={`notice ${status === "error" ? "error" : "warn"}`}>
               <AlertTriangle size={18} />
-              <span>20文字以上の課題メモを入力してください。</span>
+              <span>{errorMessage}</span>
             </div>
           )}
 
@@ -144,7 +196,7 @@ function App() {
             ) : (
               <WandSparkles size={19} />
             )}
-            <span>{status === "loading" ? "分析中" : "AIで分析"}</span>
+            <span>{status === "loading" ? "分析中" : "Geminiで分析"}</span>
             <ArrowRight size={18} />
           </button>
         </section>
@@ -165,7 +217,7 @@ function App() {
             <div className="theme-row">
               <CheckCircle2 size={20} />
               <div>
-                <p>推定テーマ</p>
+                <p>{result.provider === "gemini" ? "Gemini 推定テーマ" : "デモ推定テーマ"}</p>
                 <h3>{result.theme}</h3>
               </div>
             </div>
