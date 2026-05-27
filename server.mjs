@@ -1,10 +1,15 @@
 import { createServer } from "node:http";
-import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
+import { appendFile, mkdir, readFile } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import { extname, join, resolve } from "node:path";
+
+loadEnvFile(".env");
+loadEnvFile(".env.local");
 
 const port = Number(process.env.PORT || 8787);
 const distDir = resolve("dist");
+const logDir = resolve("logs");
+const logFile = join(logDir, "app.log");
 const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const model = process.env.GEMINI_MODEL || process.env.AI_MODEL || "gemini-2.5-flash";
 
@@ -14,6 +19,62 @@ const jsonHeaders = {
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
+
+function loadEnvFile(path) {
+  if (!existsSync(path)) return;
+
+  const lines = readFileSync(path, "utf8").split(/\r?\n/);
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
+
+    const index = trimmed.indexOf("=");
+    const key = trimmed.slice(0, index).trim();
+    let value = trimmed.slice(index + 1).trim();
+
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1);
+    }
+
+    if (key && process.env[key] === undefined) {
+      process.env[key] = value;
+    }
+  }
+}
+
+function redact(value) {
+  return String(value || "").replace(
+    /(GEMINI_API_KEY|GOOGLE_API_KEY|x-goog-api-key)["':=\s]+[^"',\s}]+/gi,
+    "$1=[redacted]",
+  );
+}
+
+async function logEvent(level, message, meta = {}) {
+  const entry = {
+    time: new Date().toISOString(),
+    level,
+    message,
+    ...meta,
+  };
+
+  const line = `${JSON.stringify(entry, (_key, value) =>
+    typeof value === "string" ? redact(value) : value,
+  )}\n`;
+
+  try {
+    await mkdir(logDir, { recursive: true });
+    await appendFile(logFile, line, "utf8");
+  } catch {
+    // Logging must never break the demo.
+  }
+
+  const consoleLine = `[${entry.level}] ${entry.message}`;
+  if (level === "error") console.error(consoleLine);
+  else console.log(consoleLine);
+}
 
 function sendJson(response, status, payload) {
   response.writeHead(status, jsonHeaders);
@@ -81,6 +142,29 @@ function validateAnalysis(payload) {
   };
 }
 
+function createGeminiError(status, detail) {
+  let publicMessage = "Gemini API request failed";
+
+  try {
+    const payload = JSON.parse(detail);
+    const reason = payload?.error?.status || payload?.error?.message || "";
+    if (status === 429 || reason.includes("RESOURCE_EXHAUSTED")) {
+      publicMessage = "Gemini API quota exceeded";
+    } else if (status === 400) {
+      publicMessage = "Gemini API rejected the request";
+    } else if (status === 403) {
+      publicMessage = "Gemini API key does not have access";
+    }
+  } catch {
+    if (status === 429) publicMessage = "Gemini API quota exceeded";
+  }
+
+  const error = new Error(publicMessage);
+  error.status = status === 429 ? 429 : 502;
+  error.detail = detail;
+  return error;
+}
+
 async function analyzeWithGemini(text) {
   if (!apiKey) {
     const error = new Error("GEMINI_API_KEY is not configured");
@@ -92,6 +176,13 @@ async function analyzeWithGemini(text) {
   const timeout = setTimeout(() => controller.abort(), 12000);
 
   try {
+    await logEvent("info", "Calling Gemini API", {
+      model,
+      inputLength: text.length,
+      hasGeminiKey: Boolean(process.env.GEMINI_API_KEY),
+      hasGoogleKey: Boolean(process.env.GOOGLE_API_KEY),
+    });
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
       {
@@ -113,14 +204,17 @@ async function analyzeWithGemini(text) {
 
     if (!response.ok) {
       const detail = await response.text();
-      const error = new Error(`Gemini API error: ${response.status} ${detail}`);
-      error.status = 502;
-      throw error;
+      throw createGeminiError(response.status, detail);
     }
 
     const data = await response.json();
     const textResponse = parseGeminiText(data);
-    return validateAnalysis(safeParseJson(textResponse));
+    const analysis = validateAnalysis(safeParseJson(textResponse));
+    await logEvent("info", "Gemini API analysis completed", {
+      model,
+      score: analysis.score,
+    });
+    return analysis;
   } finally {
     clearTimeout(timeout);
   }
@@ -157,7 +251,13 @@ const server = createServer(async (request, response) => {
   }
 
   if (request.url === "/api/health") {
-    sendJson(response, 200, { ok: true, provider: "gemini", model });
+    sendJson(response, 200, {
+      ok: true,
+      provider: "gemini",
+      model,
+      hasApiKey: Boolean(apiKey),
+      logFile,
+    });
     return;
   }
 
@@ -173,7 +273,11 @@ const server = createServer(async (request, response) => {
 
       sendJson(response, 200, await analyzeWithGemini(text));
     } catch (error) {
-      console.error(error.message);
+      await logEvent("error", "Analyze request failed", {
+        status: error.status || 500,
+        error: error.message,
+        detail: error.detail,
+      });
       sendJson(response, error.status || 500, { error: error.message });
     }
     return;
@@ -182,7 +286,14 @@ const server = createServer(async (request, response) => {
   await serveStatic(request, response);
 });
 
-server.listen(port, "127.0.0.1", () => {
+server.listen(port, "127.0.0.1", async () => {
+  await logEvent("info", "API server started", {
+    url: `http://127.0.0.1:${port}`,
+    model,
+    hasApiKey: Boolean(apiKey),
+    logFile,
+  });
   console.log(`API server running at http://127.0.0.1:${port}`);
   console.log(`Gemini model: ${model}`);
+  console.log(`Log file: ${logFile}`);
 });

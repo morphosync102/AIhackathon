@@ -90,7 +90,14 @@ async function requestAnalysis(text) {
 
   if (!response.ok) {
     const message = await response.text();
-    throw new Error(message || "AI analysis failed");
+    let errorMessage = message || "AI analysis failed";
+    try {
+      const payload = JSON.parse(message);
+      errorMessage = payload.error || errorMessage;
+    } catch {
+      // Keep the plain response text when the server did not return JSON.
+    }
+    throw new Error(errorMessage);
   }
 
   const payload = await response.json();
@@ -127,6 +134,8 @@ function App() {
       setErrorMessage(
         error.message.includes("GEMINI_API_KEY")
           ? "GEMINI_API_KEY が未設定のため、デモ用結果を表示しています。"
+          : error.message.includes("quota")
+            ? "Gemini API の利用上限に達しているため、デモ用結果を表示しています。"
           : "Gemini API に接続できないため、デモ用結果を表示しています。",
       );
       setStatus("degraded");
