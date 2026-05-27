@@ -1,6 +1,6 @@
 ---
 name: hackathon-review
-description: Use when reviewing a hackathon app against judging criteria: theme fit, implementation, challenge spirit, and AI usage.
+description: "Use when reviewing a hackathon app against judging criteria: theme fit, implementation, challenge spirit, and AI usage."
 ---
 
 # Hackathon Review
