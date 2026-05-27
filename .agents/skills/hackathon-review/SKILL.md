@@ -1,34 +1,34 @@
 ---
 name: hackathon-review
-description: "Use when reviewing a hackathon app against judging criteria: theme fit, implementation, challenge spirit, and AI usage."
+description: "ハッカソンアプリを審査基準に照らしてレビューするときに使う。テーマ適合、実装、チャレンジ精神、AI 利用を確認する。"
 ---
 
-# Hackathon Review
+# ハッカソンレビュー
 
-## Goal
+## 目的
 
-Find the fastest improvements that increase judging score.
+審査スコアを上げるための最短の改善点を見つける。
 
-## Review Criteria
+## レビュー基準
 
-1. Theme fit: the app clearly responds to the announced theme.
-2. Implementation: the submitted URL works and the main flow completes.
-3. Challenge spirit: the solution feels original or technically curious.
-4. AI usage: AI is central and visible in the user experience.
+1. テーマ適合: アプリが発表テーマに明確に応えている。
+2. 実装: 提出 URL が動作し、主要フローが完了する。
+3. チャレンジ精神: 解決策に独自性や技術的な好奇心がある。
+4. AI 利用: AI がユーザー体験の中心にあり、見える形で使われている。
 
-## Workflow
+## 手順
 
-1. Open or inspect the current app flow.
-2. Identify the exact three-minute demo path.
-3. Score each criterion from 1 to 5.
-4. List blockers that could break the submitted demo.
-5. Recommend only improvements that fit the remaining time.
+1. 現在のアプリフローを開く、または確認する。
+2. 3 分デモの正確な導線を特定する。
+3. 各基準を 1 から 5 で採点する。
+4. 提出デモを壊しうるブロッカーを列挙する。
+5. 残り時間に収まる改善だけを推奨する。
 
-## Output Format
+## 出力形式
 
-Return:
+次を返す:
 
-- Overall risk: low, medium, or high.
-- Scores for the four criteria.
-- Top three fixes in priority order.
-- One thing to avoid changing before submission.
+- 全体リスク: 低、中、高。
+- 4 つの基準のスコア。
+- 優先順の修正トップ 3。
+- 提出前に変更を避けるべきこと 1 つ。

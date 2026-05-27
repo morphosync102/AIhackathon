@@ -1,24 +1,24 @@
 ---
 name: prompt-engineering
-description: Use when adapting prompts for an unknown hackathon theme, especially to produce concise structured JSON outputs for a web UI.
+description: 未知のハッカソンテーマに合わせてプロンプトを調整するときに使う。特に Web UI 向けの簡潔な構造化 JSON 出力を作る場合に使う。
 ---
 
-# Prompt Engineering
+# プロンプトエンジニアリング
 
-## Goal
+## 目的
 
-Create prompts that turn theme-specific user input into useful structured outputs.
+テーマ固有のユーザー入力を、役に立つ構造化出力へ変換するプロンプトを作る。
 
-## Workflow
+## 手順
 
-1. Include the announced theme in every core prompt.
-2. Give the model a product role, not just a generic assistant role.
-3. Ask for concise, practical output.
-4. Ask for strict JSON when the frontend needs predictable rendering.
-5. Include fields that map directly to UI sections.
-6. Test with the sample input and one adversarial or vague input.
+1. すべての中核プロンプトに発表テーマを含める。
+2. モデルには汎用アシスタントではなく、プロダクト上の役割を与える。
+3. 簡潔で実用的な出力を求める。
+4. フロントエンドが予測可能な描画を必要とする場合は、厳密な JSON を求める。
+5. UI セクションに直接対応するフィールドを含める。
+6. サンプル入力と、意地悪または曖昧な入力を 1 つ使ってテストする。
 
-## Useful Fields
+## 便利なフィールド
 
 - `summary`
 - `insights`
@@ -28,9 +28,9 @@ Create prompts that turn theme-specific user input into useful structured output
 - `reason`
 - `score`
 
-## Avoid
+## 避けること
 
-- Prompts that produce long essays.
-- Hidden chain-of-thought requests.
-- Output shapes that the frontend cannot render.
-- Generic advice that ignores the theme.
+- 長いエッセイを生成するプロンプト。
+- 非公開の思考過程を求める指示。
+- フロントエンドが描画できない出力形状。
+- テーマを無視した汎用的な助言。

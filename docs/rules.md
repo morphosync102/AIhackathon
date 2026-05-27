@@ -1,39 +1,39 @@
-# Rules And Judging Notes
+# ルールと審査メモ
 
-## Judging Format
+## 審査形式
 
-- Judges use the submitted web app directly.
-- Each team has three minutes including questions.
-- A working submitted URL matters more than an idea-only concept.
+- 審査員は提出された Web アプリを直接使います。
+- 各チームの持ち時間は、質疑を含めて 3 分です。
+- アイデアだけの構想よりも、提出 URL が実際に動くことが重要です。
 
-## Judging Criteria
+## 審査基準
 
-1. Theme fit: the product must clearly match the announced development theme.
-2. Implementation: the submitted URL must work.
-3. Challenge spirit: show curiosity, originality, and a hacker mindset.
-4. AI usage: AI should be central and visible, not a hidden decoration.
+1. テーマ適合: プロダクトが発表された開発テーマに明確に合っていること。
+2. 実装: 提出 URL が動作すること。
+3. チャレンジ精神: 好奇心、独自性、ハッカーらしい姿勢が見えること。
+4. AI 利用: AI が隠れた飾りではなく、中心的かつ見える形で使われていること。
 
-## Pre-Build Boundary
+## 事前準備の境界
 
-Allowed pre-event preparation:
+イベント前に許可される準備:
 
-- Generic docs, checklists, branch rules, and development workflows.
-- Generic prompt patterns.
-- Generic API contracts.
-- Generic UI and backend planning.
-- Environment setup and deployment practice.
+- 汎用的なドキュメント、チェックリスト、ブランチルール、開発ワークフロー。
+- 汎用的なプロンプトパターン。
+- 汎用的な API 契約。
+- 汎用的な UI とバックエンドの計画。
+- 環境構築とデプロイ練習。
 
-Avoid before the theme is announced:
+テーマ発表前に避けること:
 
-- Theme-specific product copy.
-- Theme-specific business logic.
-- Theme-specific datasets unless publicly allowed.
-- A finished app that only needs minor text replacement.
+- テーマ固有のプロダクト文言。
+- テーマ固有のビジネスロジック。
+- 公開ルールで許可されていないテーマ固有データセット。
+- 文字を少し差し替えるだけで完成するアプリ。
 
-## Risk Controls
+## リスク対策
 
-- Keep API keys outside Git.
-- Prepare a sample input so judges do not need to invent one.
-- Prepare graceful error states for API failure or rate limits.
-- Keep the app usable in a browser without login.
-- Verify the submitted URL from a clean browser session.
+- API キーは Git の外に置く。
+- 審査員が入力内容を考えなくてよいように、サンプル入力を用意する。
+- API 失敗やレート制限に備えて、自然に見えるエラー状態を用意する。
+- ログインなしでブラウザから使えるアプリにする。
+- クリーンなブラウザセッションから提出 URL を確認する。

@@ -1,61 +1,61 @@
-# Prompt Patterns
+# プロンプトパターン
 
-Use these as starting points after the theme is announced. Replace bracketed text with the actual theme and product role.
+テーマ発表後の出発点として使います。角括弧の中身は、実際のテーマやプロダクト上の役割に置き換えてください。
 
-## JSON Analysis
-
-```txt
-You are an expert assistant for a hackathon product.
-
-Theme: [THEME]
-Product role: [ROLE]
-
-Analyze the user's input and return strict JSON with:
-- summary: string
-- insights: array of { title, detail }
-- actions: array of { title, priority, reason }
-- risks: array of { title, mitigation }
-- reasoning: string
-
-User input:
-[USER_INPUT]
-
-Keep all text concise and practical. Do not include markdown.
-```
-
-## Judging Self-Review
+## JSON 分析
 
 ```txt
-Review this hackathon app idea against four criteria:
-1. Theme fit
-2. Implementation as a working web app
-3. Challenge spirit
-4. AI usage
+あなたはハッカソンプロダクトの専門アシスタントです。
 
-Return JSON with scores from 1 to 5, the strongest point, the weakest point, and three improvements that can be done within 30 minutes.
+テーマ: [テーマ]
+プロダクト上の役割: [役割]
 
-App:
-[APP_DESCRIPTION]
+ユーザー入力を分析し、次の厳密な JSON を返してください。
+- summary: 文字列
+- insights: { title, detail } の配列
+- actions: { title, priority, reason } の配列
+- risks: { title, mitigation } の配列
+- reasoning: 文字列
+
+ユーザー入力:
+[ユーザー入力]
+
+すべての文章は簡潔で実用的にしてください。Markdown は含めないでください。
 ```
 
-## Multi-Perspective Review
+## 審査基準セルフレビュー
 
 ```txt
-Act as three reviewers:
-- A target user
-- A technical judge
-- A risk reviewer
+このハッカソンアプリ案を、次の 4 つの基準でレビューしてください。
+1. テーマ適合
+2. 動く Web アプリとしての実装
+3. チャレンジ精神
+4. AI 利用
 
-For the hackathon theme [THEME], review the user's situation and propose a practical solution. Return concise JSON with each reviewer's concern and one combined recommendation.
+1 から 5 のスコア、最も強い点、最も弱い点、30 分以内にできる改善案 3 つを JSON で返してください。
 
-Situation:
-[USER_INPUT]
+アプリ:
+[アプリ説明]
 ```
 
-## Prompt Guardrails
+## 複数視点レビュー
 
-- Ask for concise output.
-- Ask for strict JSON when the UI depends on structure.
-- Include the announced theme in the prompt.
-- Include the product role in the prompt.
-- Prefer action-oriented outputs over generic advice.
+```txt
+次の 3 人のレビュー担当者として振る舞ってください。
+- 対象ユーザー
+- 技術審査員
+- リスクレビュー担当
+
+ハッカソンテーマ [テーマ] について、ユーザーの状況をレビューし、実用的な解決策を提案してください。各レビュー担当者の懸念と、統合した推奨案 1 つを簡潔な JSON で返してください。
+
+状況:
+[ユーザー入力]
+```
+
+## プロンプトのガードレール
+
+- 簡潔な出力を求める。
+- UI が構造に依存する場合は、厳密な JSON を求める。
+- 発表されたテーマをプロンプトに含める。
+- プロダクト上の役割をプロンプトに含める。
+- 汎用的な助言よりも、行動につながる出力を優先する。

@@ -1,61 +1,61 @@
-# Hackathon Strategy
+# ハッカソン戦略
 
-## Winning Shape
+## 勝ちやすい形
 
-Build a web app that turns a simple input into a structured AI-powered decision aid.
+簡単な入力を、AI による構造化された意思決定支援へ変換する Web アプリを作ります。
 
-Strong outputs:
+強い出力:
 
-- Summary
-- Extracted issues
-- Priority score
-- Recommended actions
-- Risks
-- Reasoning
-- Comparison table
+- 要約
+- 抽出された課題
+- 優先度スコア
+- 推奨アクション
+- リスク
+- 判断理由
+- 比較表
 
-Weak outputs:
+弱い出力:
 
-- A generic chatbot.
-- A static landing page.
-- Long unstructured AI text.
-- A concept that cannot be used through the submitted URL.
+- 汎用チャットボット。
+- 静的なランディングページ。
+- 長く構造化されていない AI テキスト。
+- 提出 URL から実際に使えない構想。
 
-## Reusable Product Types
+## 再利用しやすいプロダクト型
 
-Choose one within the first 15 minutes.
+最初の 15 分で 1 つ選びます。
 
-| Type | Input | Output |
+| 型 | 入力 | 出力 |
 | --- | --- | --- |
-| Diagnosis | Situation text | Problems, score, next actions |
-| Planning | Goal and constraints | Step-by-step plan |
-| Transformation | Messy notes or URL | Structured tasks or report |
-| Comparison | Options | Recommendation with reasons |
-| Simulation | Conditions | Expected result and risk |
+| 診断 | 状況説明テキスト | 問題、スコア、次のアクション |
+| 計画 | 目標と制約 | 段階的な計画 |
+| 変換 | 雑多なメモや URL | 構造化されたタスクまたはレポート |
+| 比較 | 選択肢 | 理由付きの推奨 |
+| シミュレーション | 条件 | 予想結果とリスク |
 
-## Three-Minute Demo Flow
+## 3 分デモの流れ
 
-1. State the user and problem in one sentence.
-2. Open the working URL.
-3. Use the sample input.
-4. Run the AI action.
-5. Show structured results.
-6. Explain why the AI output changes the user's next action.
-7. Mention one extension if asked.
+1. ユーザーと課題を一文で説明する。
+2. 動作する URL を開く。
+3. サンプル入力を使う。
+4. AI アクションを実行する。
+5. 構造化された結果を見せる。
+6. AI 出力によってユーザーの次の行動がどう変わるかを説明する。
+7. 質問されたら、拡張案を 1 つだけ話す。
 
-## Time Allocation
+## 時間配分
 
-- First 15 minutes: decide what not to build.
-- First 30 minutes: freeze UI flow and API response shape.
-- By 90 minutes: first end-to-end result must work.
-- By 120 minutes: deploy once.
-- Last 30 minutes: no new major features.
+- 最初の 15 分: 作らないものを決める。
+- 最初の 30 分: UI フローと API レスポンス形状を固定する。
+- 90 分時点: 最初のエンドツーエンド結果が動いていること。
+- 120 分時点: 一度デプロイすること。
+- 最後の 30 分: 大きな新機能は追加しない。
 
-## Scoring Heuristic
+## スコア確認の目安
 
-Before submission, ask:
+提出前に確認すること:
 
-- Can a judge understand the value in 30 seconds?
-- Does the result visibly depend on AI?
-- Does the app still look useful if the sample input is changed?
-- Is the submitted URL stable?
+- 審査員が 30 秒で価値を理解できるか。
+- 結果が AI によって変わっていることが見えるか。
+- サンプル入力を変えても、アプリが有用に見えるか。
+- 提出 URL は安定しているか。

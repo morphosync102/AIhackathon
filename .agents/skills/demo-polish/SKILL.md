@@ -1,31 +1,31 @@
 ---
 name: demo-polish
-description: Use when improving a hackathon web app for a three-minute judge-operated demo, including sample input, UI clarity, result readability, and fallback states.
+description: ハッカソン Web アプリを、審査員が操作する 3 分デモ向けに改善するときに使う。サンプル入力、UI の分かりやすさ、結果の読みやすさ、フォールバック状態を扱う。
 ---
 
-# Demo Polish
+# デモ磨き込み
 
-## Goal
+## 目的
 
-Make the app understandable and reliable for judge-operated review.
+審査員が操作するレビューで、アプリを理解しやすく信頼できる状態にする。
 
-## Workflow
+## 手順
 
-1. Put the primary action above the fold.
-2. Add a sample input button with theme-specific realistic data.
-3. Make the AI action button unambiguous.
-4. Show loading feedback immediately after click.
-5. Render results as cards, lists, tables, or scores.
-6. Make the best result visible without scrolling too far.
-7. Add error text that explains what the user can do next.
+1. 主要アクションをファーストビュー内に置く。
+2. テーマに合った現実的なデータを入れるサンプル入力ボタンを追加する。
+3. AI アクションボタンの意味を明確にする。
+4. クリック直後にローディングの反応を表示する。
+5. 結果をカード、リスト、表、スコアのいずれかで表示する。
+6. 最も重要な結果を、長くスクロールしなくても見える位置に置く。
+7. ユーザーが次に何をできるかを説明するエラー文を追加する。
 
-## UI Rules
+## UI ルール
 
-- Do not rely on long instructions.
-- Use concise labels.
-- Keep text readable on mobile and desktop.
-- Avoid decorative work that does not improve the demo.
+- 長い説明文に頼らない。
+- 簡潔なラベルを使う。
+- モバイルとデスクトップの両方で文字を読みやすくする。
+- デモ改善につながらない装飾作業は避ける。
 
-## Final Check
+## 最終確認
 
-The judge should be able to understand the app by clicking the sample input and running the main action.
+審査員がサンプル入力をクリックし、メインアクションを実行するだけで、アプリを理解できる状態にする。

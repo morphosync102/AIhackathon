@@ -1,36 +1,36 @@
-# Demo Checklist
+# デモチェックリスト
 
-## Before Submission
+## 提出前
 
-- The app opens from the submitted URL.
-- The app works in a clean browser or incognito window.
-- The sample input button fills realistic data.
-- The main AI action completes.
-- Loading, success, and error states are visible.
-- Results are structured, not just one long paragraph.
-- The UI is readable on laptop and mobile width.
-- Real API keys are not committed to Git.
+- 提出 URL からアプリが開く。
+- クリーンなブラウザまたはシークレットウィンドウで動く。
+- サンプル入力ボタンで現実的なデータが入る。
+- メインの AI アクションが完了する。
+- ローディング、成功、エラー状態が見える。
+- 結果が長い一段落ではなく、構造化されている。
+- ノート PC 幅とモバイル幅で UI が読める。
+- 実際の API キーが Git にコミットされていない。
 
-## Three-Minute Demo
+## 3 分デモ
 
-- One-sentence problem statement is ready.
-- Sample input is ready.
-- Backup screenshot of a successful result is ready.
-- The presenter knows which button to click first.
-- The presenter can explain where AI is used.
-- The presenter can explain what was built after the theme was announced.
+- 一文の課題説明を準備している。
+- サンプル入力を準備している。
+- 成功結果のバックアップスクリーンショットを準備している。
+- 発表者が最初にクリックするボタンを把握している。
+- 発表者が AI の利用箇所を説明できる。
+- 発表者がテーマ発表後に作った部分を説明できる。
 
-## If The AI API Fails
+## AI API が失敗した場合
 
-- Show the error state calmly.
-- Use the backup screenshot if allowed.
-- Explain the intended input and output flow.
-- Do not spend the whole judging window debugging.
+- 落ち着いてエラー状態を見せる。
+- 許可される場合はバックアップスクリーンショットを使う。
+- 想定している入力と出力の流れを説明する。
+- 審査時間の全てをデバッグに使わない。
 
-## Last 15 Minutes
+## 最後の 15 分
 
-- Stop adding features.
-- Confirm URL.
-- Confirm environment variables.
-- Confirm no secrets in Git.
-- Confirm pitch script.
+- 機能追加を止める。
+- URL を確認する。
+- 環境変数を確認する。
+- Git にシークレットがないことを確認する。
+- ピッチ台本を確認する。

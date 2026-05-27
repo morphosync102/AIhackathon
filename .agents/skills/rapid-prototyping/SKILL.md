@@ -1,32 +1,32 @@
 ---
 name: rapid-prototyping
-description: Use when building a short-hackathon web prototype where the goal is a working demo URL within hours, especially after an unknown theme is announced.
+description: 短時間ハッカソンの Web プロトタイプを作るときに使う。特に未知のテーマ発表後、数時間以内に動くデモ URL を作る場合に使う。
 ---
 
-# Rapid Prototyping
+# 高速プロトタイピング
 
-## Goal
+## 目的
 
-Build the smallest end-to-end app that proves the idea in the judging window.
+審査時間内にアイデアを証明できる、最小のエンドツーエンドアプリを作る。
 
-## Workflow
+## 手順
 
-1. Restate the announced theme and the target user in one sentence.
-2. Choose one product type: diagnosis, planning, transformation, comparison, or simulation.
-3. Freeze the first demo path before adding secondary features.
-4. Build one vertical slice: input -> AI call or mock -> structured result -> deploy.
-5. Add sample input, loading state, error state, and responsive layout.
-6. Stop feature work when the submitted URL is at risk.
+1. 発表テーマと対象ユーザーを一文で言い直す。
+2. プロダクト型を 1 つ選ぶ: 診断、計画、変換、比較、シミュレーション。
+3. 副次機能を追加する前に、最初のデモ導線を固定する。
+4. 1 本の縦の流れを作る: 入力 -> AI 呼び出しまたはモック -> 構造化結果 -> デプロイ。
+5. サンプル入力、ローディング状態、エラー状態、レスポンシブレイアウトを追加する。
+6. 提出 URL が危ない場合は、機能追加を止める。
 
-## Default Priorities
+## 基本優先度
 
-- Working URL over code elegance.
-- Structured results over long text.
-- One strong demo path over many incomplete options.
-- Clear theme fit over generic capability.
+- コードの美しさより、動く URL。
+- 長文より、構造化された結果。
+- 多くの未完成オプションより、強いデモ導線 1 つ。
+- 汎用機能より、明確なテーマ適合。
 
-## Avoid
+## 避けること
 
-- Auth, payments, complex databases, and admin screens.
-- Multiple AI providers unless already working.
-- Features that cannot be demonstrated in three minutes.
+- 認証、決済、複雑なデータベース、管理画面。
+- すでに動いていない複数 AI プロバイダー対応。
+- 3 分で見せられない機能。

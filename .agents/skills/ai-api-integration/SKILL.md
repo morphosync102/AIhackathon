@@ -1,26 +1,26 @@
 ---
 name: ai-api-integration
-description: Use when connecting generated AI APIs in a hackathon app, including environment variables, prompt calls, JSON responses, and safe failure behavior.
+description: ハッカソンアプリで生成 AI API を接続するときに使う。環境変数、プロンプト呼び出し、JSON レスポンス、安全な失敗時挙動を扱う。
 ---
 
-# AI API Integration
+# AI API 連携
 
-## Goal
+## 目的
 
-Connect a generated AI API so the frontend can show reliable structured results.
+フロントエンドが信頼できる構造化結果を表示できるように、生成 AI API を接続する。
 
-## Workflow
+## 手順
 
-1. Read `.env.example` and use provider keys only from environment variables.
-2. Keep AI calls server-side. Never expose API keys to the browser.
-3. Define the request and response shape before implementation.
-4. Ask the model for strict JSON when the UI needs structured fields.
-5. Validate or normalize the model response before sending it to the frontend.
-6. Return controlled errors for missing input, missing key, timeout, or provider failure.
+1. `.env.example` を読み、プロバイダーキーは環境変数からのみ使う。
+2. AI 呼び出しはサーバー側に置く。API キーをブラウザへ公開しない。
+3. 実装前にリクエストとレスポンスの形を定義する。
+4. UI が構造化フィールドを必要とする場合は、モデルに厳密な JSON を要求する。
+5. フロントエンドへ送る前に、モデルレスポンスを検証または正規化する。
+6. 入力不足、キー不足、タイムアウト、プロバイダー障害には制御されたエラーを返す。
 
-## Response Shape
+## レスポンス形状
 
-Prefer:
+推奨:
 
 - `summary`
 - `insights`
@@ -29,9 +29,9 @@ Prefer:
 - `score`
 - `reasoning`
 
-## Demo Safety
+## デモ安全性
 
-- Add a short timeout.
-- Add clear loading and error states.
-- Keep a sample response available for local UI development.
-- Do not log secrets or raw credentials.
+- 短めのタイムアウトを設定する。
+- 明確なローディング状態とエラー状態を用意する。
+- ローカル UI 開発用のサンプルレスポンスを用意しておく。
+- シークレットや生の認証情報をログ出力しない。

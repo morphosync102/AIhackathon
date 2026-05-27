@@ -1,36 +1,36 @@
-# Three-Minute Pitch Template
+# 3 分ピッチテンプレート
 
-## 0:00-0:20 Problem
+## 0:00-0:20 課題
 
-Today's theme is **[THEME]**.
+今日のテーマは **[テーマ]** です。
 
-We built **[APP_NAME]** for **[TARGET_USER]** who struggles with **[PROBLEM]**.
+私たちは、**[課題]** に困っている **[対象ユーザー]** 向けに、**[アプリ名]** を作りました。
 
-## 0:20-0:40 Solution
+## 0:20-0:40 解決策
 
-The app takes **[INPUT]** and uses AI to produce **[OUTPUT]**.
+このアプリは **[入力]** を受け取り、AI を使って **[出力]** を生成します。
 
-The key value is that users can move from messy information to a concrete next action.
+主な価値は、散らかった情報から具体的な次の行動へ進めることです。
 
-## 0:40-1:50 Demo
+## 0:40-1:50 デモ
 
-1. Open the submitted URL.
-2. Click the sample input.
-3. Run the AI analysis.
-4. Show the result cards.
-5. Point out the most useful recommendation.
+1. 提出 URL を開く。
+2. サンプル入力をクリックする。
+3. AI 分析を実行する。
+4. 結果カードを見せる。
+5. 最も役に立つ推奨を示す。
 
-## 1:50-2:30 AI Usage
+## 1:50-2:30 AI 利用
 
-AI is used to:
+AI は次の用途で使っています。
 
-- Understand the user's situation.
-- Extract important issues.
-- Prioritize actions.
-- Explain risks and reasoning.
+- ユーザーの状況を理解する。
+- 重要な課題を抽出する。
+- アクションに優先順位を付ける。
+- リスクと理由を説明する。
 
-## 2:30-3:00 Wrap-Up
+## 2:30-3:00 締め
 
-This matches the theme because **[THEME_FIT]**.
+このプロダクトがテーマに合っている理由は **[テーマ適合理由]** です。
 
-If we had more time, we would add **[NEXT_EXTENSION]**.
+さらに時間があれば、**[次の拡張]** を追加します。

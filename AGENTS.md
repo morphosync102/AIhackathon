@@ -1,39 +1,39 @@
 # AGENTS.md
 
-Guidance for Codex and other AI coding agents working in this repository.
+このリポジトリで作業する Codex などの AI コーディングエージェント向けのガイドです。
 
-## Objective
+## 目的
 
-Help a two-person team build a theme-specific AI web app during a short hackathon. Prioritize a working submitted URL and a clear three-minute demo over architectural completeness.
+短時間のハッカソンで、2 人チームがテーマに沿った AI Web アプリを作ることを支援します。アーキテクチャの完成度よりも、提出 URL が動くことと、3 分で伝わるデモを優先します。
 
-## Core Rules
+## 基本ルール
 
-- Do not hardcode secrets. Use environment variables and keep real keys out of Git.
-- Treat `main` as the shared planning and rules branch.
-- Keep pre-event work generic. Theme-specific product content should be created after the theme is announced.
-- Prefer small, working vertical slices over broad unfinished systems.
-- Make AI usage visible in the UI: extracted insights, scores, reasons, actions, risks, or comparisons.
-- Always include loading, error, and sample-input states for demo safety.
+- シークレットをハードコードしないでください。環境変数を使い、実際のキーは Git に入れないでください。
+- `main` は共有の計画・ルール用ブランチとして扱ってください。
+- イベント前の作業は汎用的な範囲に留めてください。テーマ固有のプロダクト内容はテーマ発表後に作成してください。
+- 広く未完成な仕組みよりも、小さくても動く縦の一連の流れを優先してください。
+- UI 上で AI の利用を見えるようにしてください。例: 抽出した洞察、スコア、理由、アクション、リスク、比較。
+- デモの安全性のため、ローディング・エラー・サンプル入力の状態を必ず用意してください。
 
-## Branch Expectations
+## ブランチ方針
 
-- `front`: UI, forms, sample input, result display, responsive layout.
-- `back`: AI API integration, prompt construction, response validation, fallback behavior.
-- `demo`: Integration and submitted URL.
+- `front`: UI、フォーム、サンプル入力、結果表示、レスポンシブレイアウト。
+- `back`: AI API 連携、プロンプト構築、レスポンス検証、フォールバック挙動。
+- `demo`: 統合と提出 URL。
 
-## Default Build Bias
+## 実装時の基本方針
 
-- If stack is undecided, choose the fastest reliable web stack available in the repo or environment.
-- Avoid auth, payments, complex databases, and large migrations unless the theme absolutely requires them.
-- Keep the app usable without account creation.
-- Use structured JSON responses from AI APIs whenever possible.
+- スタックが未定の場合は、リポジトリまたは環境で使える最速かつ信頼できる Web スタックを選んでください。
+- テーマ上どうしても必要でない限り、認証、決済、複雑なデータベース、大きなマイグレーションは避けてください。
+- アカウント作成なしで使えるアプリにしてください。
+- 可能な限り、AI API からは構造化 JSON レスポンスを返すようにしてください。
 
-## Skill Usage
+## スキル利用
 
-Use the project skills under `.agents/skills/` when the task matches:
+タスクに合う場合は、`.agents/skills/` 配下のプロジェクト用スキルを使ってください。
 
-- `rapid-prototyping`: build the minimum working demo.
-- `ai-api-integration`: connect a generated AI API safely.
-- `prompt-engineering`: adapt prompts to the announced theme.
-- `hackathon-review`: review against judging criteria.
-- `demo-polish`: improve the three-minute judging experience.
+- `rapid-prototyping`: 最小限の動くデモを作る。
+- `ai-api-integration`: 生成 AI API を安全に接続する。
+- `prompt-engineering`: 発表されたテーマに合わせてプロンプトを調整する。
+- `hackathon-review`: 審査基準に照らしてレビューする。
+- `demo-polish`: 3 分の審査体験を改善する。

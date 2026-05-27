@@ -1,43 +1,43 @@
-# API Contract
+# API 契約
 
-Use this generic contract unless the chosen stack or theme requires something else.
+選んだスタックやテーマ上の理由がない限り、この汎用契約を使います。
 
-## Request
+## リクエスト
 
 ```json
 {
-  "theme": "announced hackathon theme",
-  "userInput": "user situation, notes, goal, or constraints",
-  "mode": "analyze",
+  "theme": "発表されたハッカソンテーマ",
+  "userInput": "ユーザーの状況、メモ、目標、制約",
+  "mode": "分析",
   "constraints": {
     "language": "ja",
-    "timeLimit": "short demo"
+    "timeLimit": "短いデモ"
   }
 }
 ```
 
-## Response
+## レスポンス
 
 ```json
 {
-  "summary": "one sentence summary",
+  "summary": "一文の要約",
   "insights": [
     {
-      "title": "key issue",
-      "detail": "why it matters"
+      "title": "重要な課題",
+      "detail": "なぜ重要か"
     }
   ],
   "actions": [
     {
-      "title": "next action",
-      "priority": "high",
-      "reason": "why this should happen first"
+      "title": "次のアクション",
+      "priority": "高",
+      "reason": "なぜ最初に行うべきか"
     }
   ],
   "risks": [
     {
-      "title": "risk",
-      "mitigation": "how to reduce it"
+      "title": "リスク",
+      "mitigation": "軽減方法"
     }
   ],
   "score": {
@@ -46,22 +46,22 @@ Use this generic contract unless the chosen stack or theme requires something el
     "challenge": 0,
     "aiUsage": 0
   },
-  "reasoning": "short explanation of the AI judgment"
+  "reasoning": "AI 判断の短い説明"
 }
 ```
 
-## Frontend Requirements
+## フロントエンド要件
 
-- Show loading state during AI execution.
-- Show a useful error state if the API fails.
-- Render every response section as cards, lists, or tables.
-- Include at least one sample input button.
-- Keep the result readable on desktop and mobile.
+- AI 実行中はローディング状態を表示する。
+- API が失敗した場合は、役に立つエラー状態を表示する。
+- レスポンスの各セクションをカード、リスト、表のいずれかで表示する。
+- 少なくとも 1 つのサンプル入力ボタンを含める。
+- デスクトップとモバイルの両方で結果を読みやすくする。
 
-## Backend Requirements
+## バックエンド要件
 
-- Validate missing input before calling the AI API.
-- Ask the AI for strict JSON if the provider supports it.
-- Normalize provider-specific output into the response shape above.
-- Return a controlled error instead of raw provider errors.
-- Never send API keys to the browser.
+- AI API を呼び出す前に、入力不足を検証する。
+- プロバイダーが対応している場合は、AI に厳密な JSON を要求する。
+- プロバイダー固有の出力を、上記のレスポンス形状へ正規化する。
+- プロバイダーの生エラーではなく、制御されたエラーを返す。
+- API キーをブラウザへ送らない。

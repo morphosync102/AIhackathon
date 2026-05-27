@@ -1,64 +1,64 @@
 # AIhackathon
 
-AI hackathon preparation repository for a two-person team.
+2 人チーム向けの AI ハッカソン準備リポジトリです。
 
-This repository keeps shared rules, strategy, prompt patterns, agent skills, and operational checklists. The actual product should be built after the event theme is announced.
+このリポジトリには、共有ルール、戦略、プロンプトパターン、エージェント用スキル、運用チェックリストを置きます。実際のプロダクトは、イベントテーマ発表後に作ります。
 
-## Branches
+## ブランチ
 
-- `main`: Shared documentation, rules, strategy, prompt templates, and agent skills.
-- `front`: Frontend implementation branch.
-- `back`: Backend and AI API implementation branch.
-- `demo`: Final integration branch for the submitted URL.
+- `main`: 共有ドキュメント、ルール、戦略、プロンプトテンプレート、エージェント用スキル。
+- `front`: フロントエンド実装ブランチ。
+- `back`: バックエンドと AI API 実装ブランチ。
+- `demo`: 提出 URL 用の最終統合ブランチ。
 
-## Competition Priorities
+## 競技での優先事項
 
-The judges use the submitted web app directly. Build for a reliable three-minute demo.
+審査員は提出された Web アプリを直接使います。3 分で安定して見せられるデモを前提に作ります。
 
-1. Match the announced theme.
-2. Ship a working URL.
-3. Show challenge and originality.
-4. Make AI usage visible in the product experience.
+1. 発表されたテーマに合っていること。
+2. 動く URL を提出すること。
+3. 挑戦性と独自性を示すこと。
+4. プロダクト体験の中で AI 利用が見えること。
 
-## Day-Of Flow
+## 当日の流れ
 
-| Time | Work |
+| 時間 | 作業 |
 | --- | --- |
-| 0:00-0:15 | Interpret the theme, choose the app type, write the one-line value proposition. |
-| 0:15-0:30 | Freeze the API contract, UI flow, demo scenario, and roles. |
-| 0:30-2:00 | Build the minimum working product. |
-| 2:00-2:25 | Integrate frontend/backend and deploy. |
-| 2:25-2:45 | Polish demo flow, sample input, result display, and pitch. |
-| 2:45-3:00 | Final URL check, backup screenshots, and submission. |
+| 0:00-0:15 | テーマを解釈し、アプリ種別を選び、一文の価値提案を書く。 |
+| 0:15-0:30 | API 契約、UI フロー、デモシナリオ、役割を固定する。 |
+| 0:30-2:00 | 最小限の動くプロダクトを作る。 |
+| 2:00-2:25 | フロントエンドとバックエンドを統合し、デプロイする。 |
+| 2:25-2:45 | デモフロー、サンプル入力、結果表示、ピッチを磨く。 |
+| 2:45-3:00 | 最終 URL 確認、バックアップスクリーンショット、提出。 |
 
-## Roles
+## 役割
 
-- Front/demo owner: UI, sample input, result cards, mobile layout, demo script.
-- Back/AI owner: AI API calls, prompts, JSON shaping, error handling, deployment support.
+- フロント/デモ担当: UI、サンプル入力、結果カード、モバイルレイアウト、デモ台本。
+- バック/AI 担当: AI API 呼び出し、プロンプト、JSON 整形、エラーハンドリング、デプロイ支援。
 
-Either person may take over the other role if the demo URL is at risk.
+デモ URL が危ない場合は、どちらかが相手の役割を引き継いでもかまいません。
 
-## Local Setup Notes
+## ローカルセットアップメモ
 
-The stack is intentionally not fixed before the theme is announced. Add stack-specific setup steps here once chosen.
+テーマ発表前は、あえてスタックを固定しません。選定後に、スタック固有のセットアップ手順をここへ追記します。
 
 ```txt
-Package manager:
-Frontend command:
-Backend command:
-Dev URL:
-Deploy URL:
+パッケージマネージャー:
+フロントエンドコマンド:
+バックエンドコマンド:
+開発 URL:
+デプロイ URL:
 ```
 
-## Environment Variables
+## 環境変数
 
-Copy `.env.example` to your local environment file for the chosen framework. Never commit real API keys.
+選んだフレームワークに合わせて、`.env.example` をローカルの環境変数ファイルへコピーしてください。実際の API キーは絶対にコミットしないでください。
 
-## Useful Docs
+## 参考ドキュメント
 
-- [Rules](docs/rules.md)
-- [Strategy](docs/strategy.md)
-- [API Contract](docs/api-contract.md)
-- [Prompt Patterns](docs/prompt-patterns.md)
-- [Demo Checklist](docs/demo-checklist.md)
-- [Pitch Template](docs/pitch-template.md)
+- [ルール](docs/rules.md)
+- [戦略](docs/strategy.md)
+- [API 契約](docs/api-contract.md)
+- [プロンプトパターン](docs/prompt-patterns.md)
+- [デモチェックリスト](docs/demo-checklist.md)
+- [ピッチテンプレート](docs/pitch-template.md)
