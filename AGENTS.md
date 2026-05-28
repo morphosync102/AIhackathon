@@ -37,3 +37,6 @@
 - `prompt-engineering`: 発表されたテーマに合わせてプロンプトを調整する。
 - `hackathon-review`: 審査基準に照らしてレビューする。
 - `demo-polish`: 3 分の審査体験を改善する。
+- `camera-solution-shaping`: カメラ系アイデアを審査向けの実現形に整える。
+- `note-image-solution-shaping`: 手書きメモや資料写真のアイデアを審査向けの実現形に整える。
+- `persona-first-ui-design`: UI 実装前にペルソナを確認し、プロダクトに合うデザイン方針を決める。
