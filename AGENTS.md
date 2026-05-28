@@ -10,16 +10,20 @@
 
 - シークレットをハードコードしないでください。環境変数を使い、実際のキーは Git に入れないでください。
 - `main` は共有の計画・ルール用ブランチとして扱ってください。
+- 方針や運用を変えたら、`AGENTS.md` と `README.md` も更新してください。
 - イベント前の作業は汎用的な範囲に留めてください。テーマ固有のプロダクト内容はテーマ発表後に作成してください。
 - 広く未完成な仕組みよりも、小さくても動く縦の一連の流れを優先してください。
 - UI 上で AI の利用を見えるようにしてください。例: 抽出した洞察、スコア、理由、アクション、リスク、比較。
 - デモの安全性のため、ローディング・エラー・サンプル入力の状態を必ず用意してください。
+- AI API は原則 Gemini API を使ってください。
+- デモは、製作者の発表なしでも審査員が Chrome で触れば価値が伝わる状態を基準にしてください。
 
 ## ブランチ方針
 
 - `front`: UI、フォーム、サンプル入力、結果表示、レスポンシブレイアウト。
 - `back`: AI API 連携、プロンプト構築、レスポンス検証、フォールバック挙動。
 - `demo`: 統合と提出 URL。
+- `front` と `back` にも、この Markdown 一式を持って行き、同じ方針を参照して開発してください。
 
 ## 実装時の基本方針
 
@@ -40,3 +44,10 @@
 - `camera-solution-shaping`: カメラ系アイデアを審査向けの実現形に整える。
 - `note-image-solution-shaping`: 手書きメモや資料写真のアイデアを審査向けの実現形に整える。
 - `persona-first-ui-design`: UI 実装前にペルソナを確認し、プロダクトに合うデザイン方針を決める。
+- `testing-demo-safety`: 審査員が Chrome で触る提出 URL とデモ安全性を確認する。
+
+## 担当別の使い分け
+
+- `front`: `persona-first-ui-design`、`rapid-prototyping`、`demo-polish`、`testing-demo-safety` を主に使う。
+- `back`: `ai-api-integration`、`prompt-engineering`、`testing-demo-safety` を主に使う。
+- `demo`: すべての成果を統合し、`hackathon-review` と `testing-demo-safety` で提出前確認を行う。
