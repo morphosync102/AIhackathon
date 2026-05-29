@@ -4,7 +4,7 @@
 
 ## 目的
 
-短時間のハッカソンで、2 人チームがテーマに沿った AI Web アプリを作ることを支援します。アーキテクチャの完成度よりも、提出 URL が動くことと、3 分で伝わるデモを優先します。
+短時間のハッカソンで、2 人チームが話し合いながら 1 人実装でテーマに沿った AI Web アプリを作ることを支援します。アーキテクチャの完成度よりも、提出 URL が動くことと、3 分で伝わるデモを優先します。
 
 ## 基本ルール
 
@@ -20,10 +20,9 @@
 
 ## ブランチ方針
 
-- `front`: UI、フォーム、サンプル入力、結果表示、レスポンシブレイアウト。
-- `back`: AI API 連携、プロンプト構築、レスポンス検証、フォールバック挙動。
-- `demo`: 統合と提出 URL。
-- `front` と `back` にも、この Markdown 一式を持って行き、同じ方針を参照して開発してください。
+- `main`: 共有ドキュメント、ルール、戦略、スキル。
+- `demo`: 1 人実装で統合し、提出 URL を作るブランチ。
+- 他のブランチで作業する場合も、この Markdown 一式を持って行き、同じ方針を参照してください。
 
 ## 実装時の基本方針
 
@@ -46,8 +45,8 @@
 - `persona-first-ui-design`: UI 実装前にペルソナを確認し、プロダクトに合うデザイン方針を決める。
 - `testing-demo-safety`: 審査員が Chrome で触る提出 URL とデモ安全性を確認する。
 
-## 担当別の使い分け
+## 当日の使い分け
 
-- `front`: `persona-first-ui-design`、`rapid-prototyping`、`demo-polish`、`testing-demo-safety` を主に使う。
-- `back`: `ai-api-integration`、`prompt-engineering`、`testing-demo-safety` を主に使う。
-- `demo`: すべての成果を統合し、`hackathon-review` と `testing-demo-safety` で提出前確認を行う。
+- 実装者: `rapid-prototyping`、`ai-api-integration`、`prompt-engineering`、`demo-polish` を使って最小動作を作る。
+- 相談相手: `persona-first-ui-design`、`hackathon-review`、`testing-demo-safety` を使って方向性と審査員目線を確認する。
+- 2 人で、30 分時点と 60 分時点に「継続、磨き込み、別案を試す」のどれに進むか決める。
