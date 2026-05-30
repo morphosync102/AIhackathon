@@ -6,6 +6,7 @@ import {
   applyAutoRpmTick,
   applyWordAnalysis,
   buyShopItem,
+  getLevelForEnergy,
   getRpmPerSecond,
   getShopItems,
 } from "./gameLogic.js";
@@ -21,6 +22,12 @@ test("word analysis adds growth energy and spendable RPM", () => {
 
   assert.equal(state.totalEnergy, 20);
   assert.equal(state.currentRpm, 40);
+});
+
+test("levels rise quickly enough for short demos", () => {
+  assert.equal(getLevelForEnergy(34), 2);
+  assert.equal(getLevelForEnergy(75), 3);
+  assert.equal(getLevelForEnergy(120), 4);
 });
 
 test("shop item spends RPM and increases RPM production", () => {

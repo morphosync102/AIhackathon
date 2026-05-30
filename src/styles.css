@@ -91,8 +91,7 @@ textarea {
 .landscape__trees {
   transition:
     background 520ms ease,
-    opacity 520ms ease,
-    transform 520ms ease;
+    opacity 520ms ease;
 }
 
 .landscape__sky {
@@ -157,7 +156,6 @@ textarea {
   transform-origin: 50% 100%;
   background: var(--tree-image) center bottom / contain no-repeat;
   transition:
-    transform 520ms ease,
     width 520ms ease,
     height 520ms ease;
 }
@@ -503,7 +501,6 @@ textarea {
 .turbine-stage {
   --turbine-size-desktop: 240px;
   --turbine-size: var(--turbine-size-desktop);
-  --tower-height: calc(var(--turbine-size) * 0.72);
   --spin-duration: 4s;
   --type-accent: #93c5fd;
   --type-accent-deep: #2563eb;
@@ -618,7 +615,7 @@ textarea {
   aspect-ratio: 1;
   position: absolute;
   left: 50%;
-  top: calc(var(--turbine-size) * -0.17);
+  top: 50%;
   border: 1px solid color-mix(in srgb, var(--type-accent) 42%, transparent);
   border-radius: 50%;
   background:
@@ -635,7 +632,7 @@ textarea {
   box-shadow:
     0 0 48px var(--type-glow),
     inset 0 0 34px rgba(255, 255, 255, 0.68);
-  transform: translateX(-50%) scale(0.86);
+  transform: translate(-50%, -50%) scale(0.86);
   opacity: 0.6;
 }
 
@@ -671,7 +668,6 @@ textarea {
 .turbine-stage.is-advanced .turbine-orbit,
 .turbine-stage.is-overdrive .turbine-orbit {
   opacity: 1;
-  animation: orbit-pulse 2.7s ease-in-out infinite;
 }
 
 .turbine-assembly {
@@ -681,86 +677,21 @@ textarea {
   place-items: center;
   position: absolute;
   left: 50%;
-  top: 0;
+  top: 50%;
   z-index: 3;
   filter:
     drop-shadow(0 26px 34px rgba(28, 38, 54, 0.18))
     drop-shadow(0 0 22px color-mix(in srgb, var(--type-accent) 24%, transparent));
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
 }
 
 .turbine-installation {
   width: calc(var(--turbine-size) * 1.12);
-  height: calc(var(--turbine-size) + var(--tower-height) * 0.9);
+  height: calc(var(--turbine-size) * 1.12);
   position: relative;
-  align-self: end;
+  align-self: center;
   display: grid;
   justify-items: center;
-  margin-bottom: clamp(4px, 1.8vh, 16px);
-}
-
-.turbine-nacelle {
-  width: 25%;
-  height: 12%;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  z-index: 6;
-  border-radius: 40% 52% 48% 40%;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(203, 213, 225, 0.92)),
-    #e5e7eb;
-  box-shadow:
-    inset 0 -4px 8px rgba(71, 85, 105, 0.18),
-    0 8px 16px rgba(15, 23, 42, 0.16);
-  transform: translate(-4%, -50%);
-}
-
-.turbine-tower {
-  width: calc(var(--turbine-size) * 0.082);
-  height: calc(var(--tower-height) + var(--turbine-size) * 0.32);
-  position: absolute;
-  left: 50%;
-  top: calc(var(--turbine-size) * 0.5);
-  z-index: 3;
-  border-radius: 999px 999px 10px 10px;
-  background:
-    linear-gradient(90deg, #94a3b8 0%, #f8fafc 38%, #d8e0e9 64%, #7b8797 100%);
-  box-shadow:
-    inset -7px 0 12px rgba(71, 85, 105, 0.22),
-    12px 18px 24px rgba(37, 61, 48, 0.16);
-  transform-origin: top center;
-  transform: translateX(-50%) perspective(260px) rotateX(1.5deg);
-}
-
-.turbine-base {
-  width: calc(var(--turbine-size) * 0.34);
-  height: calc(var(--turbine-size) * 0.08);
-  position: absolute;
-  left: 50%;
-  bottom: calc(var(--turbine-size) * 0.02);
-  z-index: 5;
-  border-radius: 50%;
-  background:
-    radial-gradient(ellipse at 50% 38%, rgba(255, 255, 255, 0.76), transparent 42%),
-    linear-gradient(180deg, #cbd5e1, #64748b);
-  box-shadow:
-    inset 0 -6px 10px rgba(15, 23, 42, 0.16),
-    0 8px 16px rgba(37, 61, 48, 0.24);
-  transform: translateX(-50%);
-}
-
-.turbine-ground-shadow {
-  width: calc(var(--turbine-size) * 1.05);
-  height: calc(var(--turbine-size) * 0.16);
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  z-index: 0;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(35, 74, 50, 0.22), transparent 68%);
-  filter: blur(2px);
-  transform: translateX(-50%);
 }
 
 .turbine-rotor {
@@ -781,7 +712,6 @@ textarea {
     0 0 82px var(--type-glow),
     0 0 26px var(--type-accent),
     inset 0 0 42px rgba(255, 255, 255, 0.78);
-  animation: boost-flash 0.62s ease-out infinite;
 }
 
 .turbine-blade {

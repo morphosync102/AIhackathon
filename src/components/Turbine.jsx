@@ -80,7 +80,7 @@ export default function Turbine({
   const theme = TYPE_THEMES[type] ?? TYPE_THEMES["静寂"];
   const bladeCount = safeLevel >= 14 ? 14 : safeLevel >= 7 ? 12 : safeLevel >= 4 ? 10 : 8;
   const spinDuration = `${clamp(6 - displayRpm / 70 - safeLevel * 0.05, 0.68, 6)}s`;
-  const size = `${clamp(190 + safeLevel * 7 + safeEnergy * 0.045, 210, 354)}px`;
+  const size = `${clamp(166 + safeLevel * 15 + safeEnergy * 0.06, 198, 390)}px`;
   const tierClass =
     safeLevel >= 16 ? "is-overdrive" : safeLevel >= 10 ? "is-advanced" : safeLevel >= 4 ? "is-developed" : "";
 
@@ -128,11 +128,7 @@ export default function Turbine({
 
       <div className="turbine-installation">
         <div className="turbine-orbit" aria-hidden="true" />
-        <div className="turbine-ground-shadow" />
-        <div className="turbine-tower" />
-        <div className="turbine-base" />
         <div className="turbine-assembly">
-          <div className="turbine-nacelle" />
           <div className="turbine-rotor">
             {Array.from({ length: bladeCount }).map((_, index) => (
               <span

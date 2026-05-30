@@ -11,7 +11,7 @@ export const LEVEL_THRESHOLDS = Array.from({ length: MAX_LEVEL }, (_, index) => 
 
   return {
     level,
-    energy: Math.round(42 * (level - 1) + 18 * (level - 1) ** 1.72),
+    energy: Math.round(23 * (level - 1) + 9 * (level - 1) ** 1.55),
   };
 });
 
