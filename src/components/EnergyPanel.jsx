@@ -9,6 +9,14 @@ const EMOTION_AXES = [
   { key: "love", label: "愛" },
   { key: "anxiety", label: "不安" },
 ];
+const DEFAULT_EMOTION_SCORES = {
+  motivation: 18,
+  anger: 6,
+  joy: 18,
+  sadness: 8,
+  love: 14,
+  anxiety: 14,
+};
 
 const TYPE_LABELS = {
   "発想": "発想の風",
@@ -27,7 +35,8 @@ export default function EnergyPanel({
 }) {
   const safeProgress = clamp(Number(progress) || 0, 0, 100);
   const resultType = lastResult?.type ?? "静寂";
-  const radarPoints = getRadarPoints(lastResult?.emotionScores);
+  const emotionScores = lastResult?.emotionScores ?? DEFAULT_EMOTION_SCORES;
+  const radarPoints = getRadarPoints(emotionScores);
 
   return (
     <aside className="energy-panel" aria-label="タービン状態">
@@ -67,29 +76,7 @@ export default function EnergyPanel({
               <strong>+{lastResult.energy}</strong>
             </div>
             <p className="last-result__summary">{lastResult.summary}</p>
-            <div className="emotion-radar" aria-label="感情レーダーチャート">
-              <svg className="emotion-radar__chart" viewBox="0 0 140 140" role="img">
-                <title>感情レーダーチャート</title>
-                <polygon className="emotion-radar__grid" points={getGridPoints(100)} />
-                <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(66)} />
-                <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(33)} />
-                <line x1="70" y1="70" x2="70" y2="10" />
-                <line x1="70" y1="70" x2="122" y2="40" />
-                <line x1="70" y1="70" x2="122" y2="100" />
-                <line x1="70" y1="70" x2="70" y2="130" />
-                <line x1="70" y1="70" x2="18" y2="100" />
-                <line x1="70" y1="70" x2="18" y2="40" />
-                <polygon className="emotion-radar__shape" points={radarPoints} />
-              </svg>
-              <div className="emotion-radar__labels">
-                {EMOTION_AXES.map(({ key, label }) => (
-                  <div className="emotion-radar__row" key={key}>
-                    <span>{label}</span>
-                    <strong>{lastResult.emotionScores?.[key] ?? 0}</strong>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <EmotionRadar scores={emotionScores} points={radarPoints} />
             <p className="last-result__reason">{lastResult.reason}</p>
             <p className="last-result__comment">{lastResult.comment}</p>
           </>
@@ -102,10 +89,39 @@ export default function EnergyPanel({
             <p className="last-result__summary">
               言葉を流すと、AI が風の種類とエネルギーを判定します。
             </p>
+            <EmotionRadar scores={emotionScores} points={radarPoints} muted />
           </>
         )}
       </div>
     </aside>
+  );
+}
+
+function EmotionRadar({ scores, points, muted = false }) {
+  return (
+    <div className={`emotion-radar ${muted ? "emotion-radar--muted" : ""}`} aria-label="感情レーダーチャート">
+      <svg className="emotion-radar__chart" viewBox="0 0 140 140" role="img">
+        <title>感情レーダーチャート</title>
+        <polygon className="emotion-radar__grid" points={getGridPoints(100)} />
+        <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(66)} />
+        <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(33)} />
+        <line x1="70" y1="70" x2="70" y2="10" />
+        <line x1="70" y1="70" x2="122" y2="40" />
+        <line x1="70" y1="70" x2="122" y2="100" />
+        <line x1="70" y1="70" x2="70" y2="130" />
+        <line x1="70" y1="70" x2="18" y2="100" />
+        <line x1="70" y1="70" x2="18" y2="40" />
+        <polygon className="emotion-radar__shape" points={points} />
+      </svg>
+      <div className="emotion-radar__labels">
+        {EMOTION_AXES.map(({ key, label }) => (
+          <div className="emotion-radar__row" key={key}>
+            <span>{label}</span>
+            <strong>{scores?.[key] ?? 0}</strong>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
 

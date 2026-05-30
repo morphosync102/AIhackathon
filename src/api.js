@@ -2,6 +2,7 @@ import { normalizeAnalysis, WORD_TYPES } from "./gameLogic.js";
 
 const API_PATH = "/api/analyze-word";
 const DEMO_AI_DELAY_MS = 920;
+const USE_GEMINI_API = import.meta.env.VITE_USE_GEMINI_API !== "false";
 
 export async function analyzeWord({ text, currentLevel, currentEnergy }) {
   const payload = {
@@ -9,6 +10,12 @@ export async function analyzeWord({ text, currentLevel, currentEnergy }) {
     currentLevel,
     currentEnergy,
   };
+
+  if (!USE_GEMINI_API) {
+    console.info("Gemini API: 使ってない（VITE_USE_GEMINI_API=false）");
+    await wait(DEMO_AI_DELAY_MS);
+    return createDemoAiAnalysis(payload);
+  }
 
   try {
     const response = await fetch(API_PATH, {
@@ -24,8 +31,14 @@ export async function analyzeWord({ text, currentLevel, currentEnergy }) {
     }
 
     const data = await response.json();
+    if (data.source === "gemini") {
+      console.info("Gemini API: 使ってる");
+    } else {
+      console.info("Gemini API: 使ってない（APIサーバーのフォールバック）");
+    }
     return normalizeAnalysis(data);
-  } catch {
+  } catch (error) {
+    console.info("Gemini API: 使ってない（デモAIで判定）", error?.message || "");
     await wait(DEMO_AI_DELAY_MS);
     return createDemoAiAnalysis(payload);
   }

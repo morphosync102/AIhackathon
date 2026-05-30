@@ -51,10 +51,17 @@ app.post("/api/analyze-word", async (req, res) => {
 
   try {
     const analysis = await analyzeWithGemini({ text, currentLevel, currentEnergy });
-    res.json(normalizeAnalysis(analysis, text));
+    console.info("Gemini API: 使ってる");
+    res.json({
+      ...normalizeAnalysis(analysis, text),
+      source: "gemini",
+    });
   } catch (error) {
-    console.warn("Gemini analysis failed; returning fallback.", safeErrorMessage(error));
-    res.json(createFallbackResponse(text));
+    console.info("Gemini API: 使ってない（フォールバック）", safeErrorMessage(error));
+    res.json({
+      ...createFallbackResponse(text),
+      source: "fallback",
+    });
   }
 });
 
@@ -80,6 +87,11 @@ app.use((error, _req, res, _next) => {
 
 app.listen(port, () => {
   console.log(`API server listening on http://localhost:${port}`);
+  console.info(
+    process.env.GEMINI_API_KEY
+      ? `Gemini API: 使える設定です (${geminiModel})`
+      : "Gemini API: 使ってない（GEMINI_API_KEY 未設定）",
+  );
 });
 
 async function analyzeWithGemini({ text, currentLevel, currentEnergy }) {
@@ -117,9 +129,12 @@ async function analyzeWithGemini({ text, currentLevel, currentEnergy }) {
             },
           ],
           generationConfig: {
-            temperature: 0.35,
-            maxOutputTokens: 240,
+            temperature: 0.2,
+            maxOutputTokens: 1024,
             responseMimeType: "application/json",
+            thinkingConfig: {
+              thinkingBudget: 0,
+            },
           },
         }),
       },

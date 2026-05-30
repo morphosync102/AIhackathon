@@ -178,14 +178,6 @@ export default function App() {
 
       <section className="turbine-layout" aria-label="タービンとエネルギー状態">
         <div className="turbine-main">
-          <Turbine
-            level={gameState.level}
-            energy={gameState.totalEnergy}
-            type={lastType}
-            emotion={dominantEmotion}
-            boosting={boosting}
-          />
-
           <div className="sample-row" aria-label="サンプル入力">
             {sampleInputs.map((sample) => (
               <button
@@ -212,6 +204,14 @@ export default function App() {
               候補を更新
             </button>
           </div>
+
+          <Turbine
+            level={gameState.level}
+            energy={gameState.totalEnergy}
+            type={lastType}
+            emotion={dominantEmotion}
+            boosting={boosting}
+          />
         </div>
 
         {energyPopup ? (
