@@ -105,21 +105,21 @@ export default function App() {
               {isLoading ? "変換中" : "言葉を流す"}
             </button>
           </div>
-        </form>
 
-        <div className="sample-row" aria-label="サンプル入力">
-          <button
-            type="button"
-            onClick={() => {
-              setText(recommendedText);
-              setError("");
-              rotateRecommendedText();
-            }}
-            disabled={isLoading}
-          >
-            AI推奨：「{recommendedText}」
-          </button>
-        </div>
+          <div className="sample-row" aria-label="サンプル入力">
+            <button
+              type="button"
+              onClick={() => {
+                setText(recommendedText);
+                setError("");
+                rotateRecommendedText();
+              }}
+              disabled={isLoading}
+            >
+              AI推奨：「{recommendedText}」
+            </button>
+          </div>
+        </form>
 
         <div className="message-row" aria-live="polite">
           {error ? <p className="message message--error">{error}</p> : null}

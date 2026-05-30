@@ -1,4 +1,13 @@
 import "../styles.css";
+import powerTowerIcon from "../assets/shop/power-tower.png";
+import relayCoilIcon from "../assets/shop/relay-coil.png";
+import smallGeneratorIcon from "../assets/shop/small-generator.png";
+
+const ITEM_ICONS = {
+  "small-generator": smallGeneratorIcon,
+  "relay-coil": relayCoilIcon,
+  "power-tower": powerTowerIcon,
+};
 
 export default function ShopPanel({ items = [], onBuy }) {
   const compactItems = items.slice(0, 3);
@@ -19,6 +28,9 @@ export default function ShopPanel({ items = [], onBuy }) {
             onClick={() => onBuy(item.id)}
             disabled={!item.canBuy}
           >
+            <span className="shop-item__icon" aria-hidden="true">
+              <img src={ITEM_ICONS[item.id]} alt="" />
+            </span>
             <span className="shop-item__main">
               <strong>{item.name}</strong>
               <span>{item.description}</span>

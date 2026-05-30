@@ -32,8 +32,8 @@ export const SHOP_CATALOG = [
   },
   {
     id: "power-tower",
-    name: "送風塔",
-    description: "広い範囲へ風を送る",
+    name: "送電塔",
+    description: "広い範囲へ電気を送る",
     baseCost: 320,
     rpmBoost: 95,
   },

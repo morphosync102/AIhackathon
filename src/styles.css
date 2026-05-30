@@ -79,7 +79,7 @@ textarea {
 
 .word-console {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
   gap: 12px;
   padding: 10px;
@@ -168,7 +168,7 @@ textarea {
 
 .sample-row {
   display: grid;
-  min-width: 230px;
+  min-width: 0;
 }
 
 .sample-row button {
@@ -178,11 +178,14 @@ textarea {
   padding: 10px 12px;
   text-align: left;
   line-height: 1.28;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .message-row {
   min-height: 20px;
-  grid-column: 2 / 4;
+  grid-column: 2;
 }
 
 .message {
@@ -646,11 +649,11 @@ textarea {
 
 .shop-item {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
   gap: 8px;
   align-items: center;
   width: 100%;
-  min-height: 48px;
+  min-height: 62px;
   padding: 8px;
   border: 1px solid color-mix(in srgb, var(--page-accent) 22%, rgba(103, 117, 138, 0.2));
   border-radius: 8px;
@@ -659,6 +662,25 @@ textarea {
   cursor: pointer;
   text-align: left;
   box-shadow: 0 8px 18px rgba(40, 52, 70, 0.07);
+}
+
+.shop-item__icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 46px;
+  overflow: hidden;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95), transparent 72%),
+    color-mix(in srgb, var(--page-accent) 12%, #f8fafc);
+}
+
+.shop-item__icon img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 7px 8px rgba(15, 23, 42, 0.22));
 }
 
 .shop-item:disabled {
@@ -828,11 +850,23 @@ textarea {
   }
 
   .shop-item {
-    grid-template-columns: 1fr;
+    grid-template-columns: 48px minmax(0, 1fr);
   }
 
   .shop-item__meta {
     justify-items: start;
+    grid-column: 2;
+  }
+
+  .shop-item__icon {
+    width: 48px;
+    height: 44px;
+    grid-row: span 2;
+  }
+
+  .shop-item__icon img {
+    width: 58px;
+    height: 58px;
   }
 
   .last-result {
