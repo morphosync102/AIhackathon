@@ -1,13 +1,18 @@
 export const WORD_TYPES = ["発想", "感情", "行動", "混沌", "静寂"];
 
-export const MAX_LEVEL = 5;
+export const MAX_LEVEL = 10;
 
 export const LEVEL_THRESHOLDS = [
   { level: 1, energy: 0 },
-  { level: 2, energy: 60 },
-  { level: 3, energy: 150 },
-  { level: 4, energy: 280 },
-  { level: 5, energy: 450 },
+  { level: 2, energy: 40 },
+  { level: 3, energy: 90 },
+  { level: 4, energy: 150 },
+  { level: 5, energy: 230 },
+  { level: 6, energy: 330 },
+  { level: 7, energy: 450 },
+  { level: 8, energy: 590 },
+  { level: 9, energy: 750 },
+  { level: 10, energy: 930 },
 ];
 
 export const INITIAL_GAME_STATE = {

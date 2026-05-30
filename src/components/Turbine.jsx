@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import "../styles.css";
 
 const TYPE_THEMES = {
@@ -41,13 +42,49 @@ export default function Turbine({
   type = "静寂",
   boosting = false,
 }) {
-  const safeLevel = clamp(Number(level) || 1, 1, 5);
+  const rotorRef = useRef(null);
+  const angleRef = useRef(0);
+  const speedRef = useRef(0);
+  const safeLevel = clamp(Number(level) || 1, 1, 10);
   const safeEnergy = Math.max(0, Number(energy) || 0);
   const theme = TYPE_THEMES[type] ?? TYPE_THEMES["静寂"];
-  const bladeCount = safeLevel >= 4 ? 10 : 8;
-  const rpm = Math.round(18 + safeLevel * 16 + Math.min(safeEnergy, 120) * 0.28);
-  const spinDuration = `${clamp(5.6 - safeLevel * 0.72 - safeEnergy / 170, 1.05, 5.4)}s`;
-  const size = `${clamp(188 + safeLevel * 22 + safeEnergy * 0.18, 210, 342)}px`;
+  const bladeCount = safeLevel >= 8 ? 12 : safeLevel >= 4 ? 10 : 8;
+  const rpm = Math.round(14 + safeLevel * 11 + Math.min(safeEnergy, 220) * 0.22);
+  const spinDurationSeconds = clamp(5.8 - safeLevel * 0.38 - safeEnergy / 260, 0.72, 5.4);
+  const spinDuration = `${spinDurationSeconds}s`;
+  const size = `${clamp(146 + safeLevel * 11 + safeEnergy * 0.1, 164, 300)}px`;
+
+  useEffect(() => {
+    let frameId;
+    let lastTime = performance.now();
+    const normalSpeed = 1 / spinDurationSeconds;
+    const boostSpeed = Math.max(normalSpeed * 4.2, 2.2);
+    const settleTime = boosting ? 0.08 : 0.72;
+
+    if (!speedRef.current) {
+      speedRef.current = normalSpeed;
+    }
+
+    function tick(now) {
+      const deltaSeconds = Math.min((now - lastTime) / 1000, 0.04);
+      lastTime = now;
+
+      const targetSpeed = boosting ? boostSpeed : normalSpeed;
+      const smoothing = 1 - Math.exp(-deltaSeconds / settleTime);
+      speedRef.current += (targetSpeed - speedRef.current) * smoothing;
+      angleRef.current = (angleRef.current + speedRef.current * 360 * deltaSeconds) % 360;
+
+      if (rotorRef.current) {
+        rotorRef.current.style.transform = `rotate(${angleRef.current}deg)`;
+      }
+
+      frameId = requestAnimationFrame(tick);
+    }
+
+    frameId = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(frameId);
+  }, [boosting, spinDurationSeconds]);
 
   const style = {
     "--turbine-size-desktop": size,
@@ -70,19 +107,25 @@ export default function Turbine({
         <span />
       </div>
 
-      <div className="turbine-orbit" aria-hidden="true" />
-      <div className="turbine-assembly">
-        <div className="turbine-rotor">
-          {Array.from({ length: bladeCount }).map((_, index) => (
-            <span
-              className="turbine-blade"
-              key={index}
-              style={{ "--blade-angle": `${(360 / bladeCount) * index}deg` }}
-            />
-          ))}
-          <span className="turbine-hub" />
+      <div className="turbine-installation">
+        <div className="turbine-orbit" aria-hidden="true" />
+        <div className="turbine-ground-shadow" />
+        <div className="turbine-tower" />
+        <div className="turbine-base" />
+        <div className="turbine-assembly">
+          <div className="turbine-nacelle" />
+          <div className="turbine-rotor" ref={rotorRef}>
+            {Array.from({ length: bladeCount }).map((_, index) => (
+              <span
+                className="turbine-blade"
+                key={index}
+                style={{ "--blade-angle": `${(360 / bladeCount) * index}deg` }}
+              />
+            ))}
+            <span className="turbine-hub" />
+          </div>
+          <div className="turbine-core" />
         </div>
-        <div className="turbine-core" />
       </div>
 
       <div className="turbine-readout">
