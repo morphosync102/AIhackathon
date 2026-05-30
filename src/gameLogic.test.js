@@ -3,8 +3,10 @@ import test from "node:test";
 
 import {
   INITIAL_GAME_STATE,
+  applyAutoRpmTick,
   applyWordAnalysis,
   buyShopItem,
+  getRpmPerSecond,
   getShopItems,
 } from "./gameLogic.js";
 
@@ -21,7 +23,7 @@ test("word analysis adds growth energy and spendable RPM", () => {
   assert.equal(state.currentRpm, 40);
 });
 
-test("shop item spends RPM and applies an immediate RPM boost", () => {
+test("shop item spends RPM and increases RPM production", () => {
   const chargedState = {
     ...INITIAL_GAME_STATE,
     currentRpm: 45,
@@ -30,7 +32,23 @@ test("shop item spends RPM and applies an immediate RPM boost", () => {
   const purchased = buyShopItem(chargedState, "small-generator");
   const items = getShopItems(purchased);
 
-  assert.equal(purchased.currentRpm, 17);
+  assert.equal(purchased.currentRpm, 5);
   assert.equal(purchased.shopItems["small-generator"], 1);
   assert.equal(items[0].cost, 54);
+  assert.equal(getRpmPerSecond(purchased), 12);
+});
+
+test("auto RPM tick adds owned item production every second", () => {
+  const state = {
+    ...INITIAL_GAME_STATE,
+    currentRpm: 10,
+    shopItems: {
+      "small-generator": 2,
+      "relay-coil": 1,
+    },
+  };
+
+  const ticked = applyAutoRpmTick(state);
+
+  assert.equal(ticked.currentRpm, 70);
 });

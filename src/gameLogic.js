@@ -131,6 +131,15 @@ export function getShopItems(state) {
   });
 }
 
+export function getRpmPerSecond(state) {
+  const ownedItems = state?.shopItems || {};
+
+  return SHOP_CATALOG.reduce((total, item) => {
+    const owned = Math.max(0, Number(ownedItems[item.id]) || 0);
+    return total + item.rpmBoost * owned;
+  }, 0);
+}
+
 export function buyShopItem(state, itemId) {
   const item = SHOP_CATALOG.find((candidate) => candidate.id === itemId);
 
@@ -148,11 +157,24 @@ export function buyShopItem(state, itemId) {
 
   return {
     ...state,
-    currentRpm: currentRpm - cost + item.rpmBoost,
+    currentRpm: currentRpm - cost,
     shopItems: {
       ...state.shopItems,
       [itemId]: owned + 1,
     },
+  };
+}
+
+export function applyAutoRpmTick(state) {
+  const rpmPerSecond = getRpmPerSecond(state);
+
+  if (rpmPerSecond <= 0) {
+    return state;
+  }
+
+  return {
+    ...state,
+    currentRpm: (Number(state.currentRpm) || 0) + rpmPerSecond,
   };
 }
 

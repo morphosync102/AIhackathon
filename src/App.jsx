@@ -1,16 +1,25 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { analyzeWord } from "./api.js";
 import Turbine from "./components/Turbine.jsx";
 import EnergyPanel from "./components/EnergyPanel.jsx";
 import ShopPanel from "./components/ShopPanel.jsx";
 import {
   INITIAL_GAME_STATE,
+  applyAutoRpmTick,
   applyWordAnalysis,
   buyShopItem,
   getNextLevelProgress,
+  getRpmPerSecond,
   getShopItems,
 } from "./gameLogic.js";
 import { sampleInputs } from "./sampleInputs.js";
+
+const POP_POSITIONS = [
+  { x: 52, y: 22 },
+  { x: 66, y: 36 },
+  { x: 36, y: 38 },
+  { x: 56, y: 64 },
+];
 
 export default function App() {
   const [text, setText] = useState("");
@@ -19,12 +28,27 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [boosting, setBoosting] = useState(false);
   const [levelUpVisible, setLevelUpVisible] = useState(false);
+  const [floatingEvents, setFloatingEvents] = useState([]);
   const [error, setError] = useState("");
   const progress = useMemo(
     () => getNextLevelProgress(gameState.totalEnergy),
     [gameState.totalEnergy],
   );
   const shopItems = useMemo(() => getShopItems(gameState), [gameState]);
+  const rpmPerSecond = useMemo(() => getRpmPerSecond(gameState), [gameState]);
+
+  useEffect(() => {
+    if (rpmPerSecond <= 0) {
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setGameState((current) => applyAutoRpmTick(current));
+      spawnRpmPop(rpmPerSecond);
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, [rpmPerSecond]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -78,6 +102,26 @@ export default function App() {
     setGameState((current) => buyShopItem(current, itemId));
     setBoosting(true);
     window.setTimeout(() => setBoosting(false), 360);
+  }
+
+  function spawnRpmPop(amount) {
+    const position = POP_POSITIONS[Math.floor(Date.now() / 1000) % POP_POSITIONS.length];
+    const id = `${Date.now()}-${amount}`;
+
+    setFloatingEvents((current) =>
+      [
+        ...current,
+        {
+          id,
+          amount,
+          ...position,
+        },
+      ].slice(-6),
+    );
+
+    window.setTimeout(() => {
+      setFloatingEvents((current) => current.filter((event) => event.id !== id));
+    }, 1300);
   }
 
   return (
@@ -136,6 +180,7 @@ export default function App() {
           rpm={gameState.currentRpm}
           type={lastType}
           boosting={boosting}
+          floatingEvents={floatingEvents}
           showReadout={false}
         />
 
@@ -156,7 +201,6 @@ export default function App() {
         totalEnergy={gameState.totalEnergy}
         energyToNextLevel={progress.remaining}
         progress={progress.progress}
-        lastResult={gameState.lastAnalysis}
       />
     </main>
   );

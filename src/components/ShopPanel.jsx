@@ -16,7 +16,7 @@ export default function ShopPanel({ items = [], onBuy }) {
     <aside className="shop-panel" aria-label="ショップ">
       <div className="shop-panel__title">
         <span>SHOP</span>
-        <strong>RPMで強化</strong>
+        <strong>毎秒RPM</strong>
       </div>
 
       <div className="shop-items">
@@ -37,7 +37,7 @@ export default function ShopPanel({ items = [], onBuy }) {
             </span>
             <span className="shop-item__meta">
               <span>{item.cost} RPM</span>
-              <span>+{item.rpmBoost}</span>
+              <span>+{item.rpmBoost}/秒</span>
               <span>所持 {item.owned}</span>
             </span>
           </button>

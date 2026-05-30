@@ -41,6 +41,7 @@ export default function Turbine({
   rpm = 0,
   type = "静寂",
   boosting = false,
+  floatingEvents = [],
   showReadout = true,
 }) {
   const safeLevel = clamp(Number(level) || 1, 1, 20);
@@ -75,6 +76,20 @@ export default function Turbine({
       </div>
 
       <div className="turbine-orbit" aria-hidden="true" />
+      <div className="rpm-pop-layer" aria-hidden="true">
+        {floatingEvents.map((event) => (
+          <span
+            className="rpm-pop"
+            key={event.id}
+            style={{
+              "--pop-x": `${event.x}%`,
+              "--pop-y": `${event.y}%`,
+            }}
+          >
+            +{event.amount}
+          </span>
+        ))}
+      </div>
       <div className="turbine-assembly">
         <div className="turbine-rotor">
           {Array.from({ length: bladeCount }).map((_, index) => (
