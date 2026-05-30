@@ -12,6 +12,7 @@ const TYPE_LABELS = {
 
 export default function EnergyPanel({
   level = 1,
+  currentRpm = 0,
   totalEnergy = 0,
   energyToNextLevel = 0,
   progress = 0,
@@ -24,8 +25,12 @@ export default function EnergyPanel({
     <aside className="energy-panel" aria-label="タービン状態">
       <div className="energy-panel__stats">
         <div className="energy-stat">
-          <span>タービンレベル</span>
+          <span>LEVEL</span>
           <strong>{level}</strong>
+        </div>
+        <div className="energy-stat">
+          <span>RPM</span>
+          <strong>{Math.round(currentRpm)}</strong>
         </div>
         <div className="energy-stat">
           <span>累計エネルギー</span>

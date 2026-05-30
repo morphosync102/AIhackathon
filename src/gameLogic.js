@@ -1,18 +1,49 @@
 export const WORD_TYPES = ["発想", "感情", "行動", "混沌", "静寂"];
 
-export const MAX_LEVEL = 5;
+export const MAX_LEVEL = 20;
 
-export const LEVEL_THRESHOLDS = [
-  { level: 1, energy: 0 },
-  { level: 2, energy: 60 },
-  { level: 3, energy: 150 },
-  { level: 4, energy: 280 },
-  { level: 5, energy: 450 },
+export const LEVEL_THRESHOLDS = Array.from({ length: MAX_LEVEL }, (_, index) => {
+  const level = index + 1;
+
+  if (level === 1) {
+    return { level, energy: 0 };
+  }
+
+  return {
+    level,
+    energy: Math.round(42 * (level - 1) + 18 * (level - 1) ** 1.72),
+  };
+});
+
+export const SHOP_CATALOG = [
+  {
+    id: "small-generator",
+    name: "小型発電機",
+    description: "回転を安定させる",
+    baseCost: 40,
+    rpmBoost: 12,
+  },
+  {
+    id: "relay-coil",
+    name: "中継コイル",
+    description: "風の勢いを保つ",
+    baseCost: 120,
+    rpmBoost: 36,
+  },
+  {
+    id: "power-tower",
+    name: "送風塔",
+    description: "広い範囲へ風を送る",
+    baseCost: 320,
+    rpmBoost: 95,
+  },
 ];
 
 export const INITIAL_GAME_STATE = {
   level: 1,
   totalEnergy: 0,
+  currentRpm: 0,
+  shopItems: {},
   lastAnalysis: null,
   history: [],
 };
@@ -76,6 +107,55 @@ export function getNextLevelProgress(totalEnergy) {
   };
 }
 
+export function calculateRpmGain(analysis) {
+  return clampEnergy(analysis?.energy) * 2;
+}
+
+export function getShopItemCost(item, owned = 0) {
+  return Math.ceil(item.baseCost * 1.35 ** owned);
+}
+
+export function getShopItems(state) {
+  const ownedItems = state?.shopItems || {};
+
+  return SHOP_CATALOG.map((item) => {
+    const owned = Math.max(0, Number(ownedItems[item.id]) || 0);
+    const cost = getShopItemCost(item, owned);
+
+    return {
+      ...item,
+      owned,
+      cost,
+      canBuy: (Number(state?.currentRpm) || 0) >= cost,
+    };
+  });
+}
+
+export function buyShopItem(state, itemId) {
+  const item = SHOP_CATALOG.find((candidate) => candidate.id === itemId);
+
+  if (!item) {
+    return state;
+  }
+
+  const owned = Math.max(0, Number(state.shopItems?.[itemId]) || 0);
+  const cost = getShopItemCost(item, owned);
+  const currentRpm = Number(state.currentRpm) || 0;
+
+  if (currentRpm < cost) {
+    return state;
+  }
+
+  return {
+    ...state,
+    currentRpm: currentRpm - cost + item.rpmBoost,
+    shopItems: {
+      ...state.shopItems,
+      [itemId]: owned + 1,
+    },
+  };
+}
+
 export function applyWordAnalysis(state, text, response) {
   const analysis = normalizeAnalysis(response);
   const totalEnergy = state.totalEnergy + analysis.energy;
@@ -85,6 +165,7 @@ export function applyWordAnalysis(state, text, response) {
     ...state,
     level,
     totalEnergy,
+    currentRpm: (Number(state.currentRpm) || 0) + calculateRpmGain(analysis),
     lastAnalysis: analysis,
     history: [
       {
