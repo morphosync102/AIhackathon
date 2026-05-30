@@ -195,16 +195,16 @@ function inferType(text) {
     return "静寂";
   }
 
-  if (/(やる|始め|作る|進め|改善|行動|計画|決め|挑戦)/.test(text)) {
-    return "行動";
-  }
-
   if (/(不安|怒|嬉|楽しい|悲しい|迷|悩|怖|好き|嫌)/.test(text)) {
     return "感情";
   }
 
   if (/(案|アイデア|企画|発想|考え|サービス|新しい)/.test(text)) {
     return "発想";
+  }
+
+  if (/(やる|始め|作る|進め|改善|行動|計画|決め|挑戦|試す)/.test(text)) {
+    return "行動";
   }
 
   if (text.length > 80 || /[,、].*[,、].*[,、]/.test(text)) {

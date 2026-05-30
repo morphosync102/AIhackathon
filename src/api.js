@@ -33,13 +33,13 @@ function createMockAnalysis({ text, currentLevel, currentEnergy }, error) {
   const normalizedText = text.trim();
   const lowerText = normalizedText.toLowerCase();
   const lengthScore = Math.min(18, Math.floor(normalizedText.length / 3));
-  const actionScore = /する|やる|始め|改善|計画|作る|試す|つなげ|届け|build|make|try/.test(
+  const actionScore = /する|やる|始め|改善|計画|作る|試す|つなげ|届け|決め|進め|build|make|try/.test(
     lowerText,
   )
     ? 14
     : 0;
-  const ideaScore = /案|発想|考え|企画|アイデア|idea|concept/.test(lowerText) ? 10 : 0;
-  const emotionScore = /不安|怒|嬉|楽しい|迷|困|失敗|怖|焦/.test(lowerText) ? 8 : 0;
+  const ideaScore = /案|発想|考え|企画|アイデア|新しい|サービス|idea|concept/.test(lowerText) ? 10 : 0;
+  const emotionScore = /不安|怒|嬉|楽しい|迷|困|失敗|怖|焦|悩|悲しい/.test(lowerText) ? 8 : 0;
   const quietPenalty = normalizedText.length < 8 ? -10 : 0;
   const levelBonus = Math.min(6, Math.max(0, Number(currentLevel) - 1));
   const energy = Math.min(
@@ -72,16 +72,20 @@ function pickType(text) {
     return "静寂";
   }
 
-  if (/する|やる|始め|改善|計画|作る|試す|つなげ/.test(text)) {
-    return "行動";
+  if (/不安|怒|嬉|楽しい|迷|困|失敗|怖|焦|悩|悲しい/.test(text)) {
+    return "感情";
   }
 
-  if (/案|発想|考え|企画|アイデア/.test(text)) {
+  if (/案|発想|考え|企画|アイデア|新しい|サービス/.test(text)) {
     return "発想";
   }
 
-  if (/不安|怒|嬉|楽しい|迷|困|失敗|怖|焦/.test(text)) {
-    return "感情";
+  if (/する|やる|始め|改善|計画|作る|試す|つなげ|決め|進め/.test(text)) {
+    return "行動";
+  }
+
+  if (text.length > 40 || /[,、].*[,、]/.test(text)) {
+    return "混沌";
   }
 
   return WORD_TYPES.includes("混沌") ? "混沌" : "混沌";
