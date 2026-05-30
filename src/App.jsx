@@ -2,27 +2,21 @@ import { useEffect, useMemo, useState } from "react";
 import { analyzeWord } from "./api.js";
 import Turbine from "./components/Turbine.jsx";
 import EnergyPanel from "./components/EnergyPanel.jsx";
-import ShopPanel from "./components/ShopPanel.jsx";
 import {
   INITIAL_GAME_STATE,
-  applyAutoRpmTick,
   applyWordAnalysis,
-  buyShopItem,
   getNextLevelProgress,
-  getRpmPerSecond,
-  getShopItems,
 } from "./gameLogic.js";
-import { sampleInputs } from "./sampleInputs.js";
-
-const POP_POSITIONS = [
-  { x: 52, y: 22 },
-  { x: 66, y: 36 },
-  { x: 36, y: 38 },
-  { x: 56, y: 64 },
-];
+import { getRandomSampleInputs } from "./sampleInputs.js";
 
 const TREE_STAGE_MAX_ENERGY = 930;
 const TREE_STAGE_COUNT = 15;
+const AI_LOADING_STEPS = [
+  "デモAIが言葉を読み取り中",
+  "感情・発想・行動の手がかりを分類中",
+  "風量とタービン成長を計算中",
+];
+const EMOTION_ORDER = ["motivation", "anger", "joy", "sadness", "love", "anxiety"];
 
 function getTreeGrowthStage(totalEnergy) {
   const safeEnergy = Math.max(0, Number(totalEnergy) || 0);
@@ -36,34 +30,53 @@ function getTreeArtStage(treeGrowthStage) {
   return Math.min(5, Math.max(1, Math.ceil(treeGrowthStage / 3)));
 }
 
+function getRandomPopupPosition() {
+  return {
+    x: 18 + Math.random() * 48,
+    y: 18 + Math.random() * 48,
+  };
+}
+
+function getDominantEmotion(scores) {
+  if (!scores) {
+    return "quiet";
+  }
+
+  return EMOTION_ORDER.reduce(
+    (strongest, emotion) => {
+      const value = Number(scores[emotion]) || 0;
+      return value > strongest.value ? { emotion, value } : strongest;
+    },
+    { emotion: "quiet", value: 0 },
+  ).emotion;
+}
+
 export default function App() {
   const [text, setText] = useState("");
-  const [sampleIndex, setSampleIndex] = useState(0);
   const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [boosting, setBoosting] = useState(false);
-  const [levelUpVisible, setLevelUpVisible] = useState(false);
-  const [floatingEvents, setFloatingEvents] = useState([]);
+  const [energyPopup, setEnergyPopup] = useState(null);
   const [error, setError] = useState("");
+  const [sampleInputs, setSampleInputs] = useState(() => getRandomSampleInputs(1));
   const progress = useMemo(
     () => getNextLevelProgress(gameState.totalEnergy),
     [gameState.totalEnergy],
   );
-  const shopItems = useMemo(() => getShopItems(gameState), [gameState]);
-  const rpmPerSecond = useMemo(() => getRpmPerSecond(gameState), [gameState]);
 
   useEffect(() => {
-    if (rpmPerSecond <= 0) {
+    if (!isLoading) {
+      setLoadingStep(0);
       return undefined;
     }
 
     const intervalId = window.setInterval(() => {
-      setGameState((current) => applyAutoRpmTick(current));
-      spawnRpmPop(rpmPerSecond);
-    }, 1000);
+      setLoadingStep((current) => (current + 1) % AI_LOADING_STEPS.length);
+    }, 360);
 
     return () => window.clearInterval(intervalId);
-  }, [rpmPerSecond]);
+  }, [isLoading]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -76,6 +89,7 @@ export default function App() {
     }
 
     setIsLoading(true);
+    setLoadingStep(0);
     setBoosting(true);
     setError("");
 
@@ -86,18 +100,15 @@ export default function App() {
         currentEnergy: gameState.totalEnergy,
       });
 
-      setGameState((current) => {
-        const next = applyWordAnalysis(current, trimmedText, analysis);
-
-        if (next.level > current.level) {
-          setLevelUpVisible(true);
-          window.setTimeout(() => setLevelUpVisible(false), 1200);
-        }
-
-        return next;
+      setGameState((current) => applyWordAnalysis(current, trimmedText, analysis));
+      setEnergyPopup({
+        id: `${Date.now()}-${analysis.energy}`,
+        energy: analysis.energy,
+        type: analysis.type,
+        ...getRandomPopupPosition(),
       });
       setText("");
-      rotateRecommendedText();
+      setSampleInputs(getRandomSampleInputs(1));
     } catch {
       setError("風が乱れました。もう一度流してください");
     } finally {
@@ -107,46 +118,16 @@ export default function App() {
   }
 
   const lastType = gameState.lastAnalysis?.type || "静寂";
-  const recommendedText = sampleInputs[sampleIndex % sampleInputs.length];
+  const dominantEmotion = getDominantEmotion(gameState.lastAnalysis?.emotionScores);
   const treeGrowthStage = getTreeGrowthStage(gameState.totalEnergy);
   const treeArtStage = getTreeArtStage(treeGrowthStage);
-  const landscapeLevel = Math.min(10, Math.max(1, gameState.level));
-
-  function rotateRecommendedText() {
-    setSampleIndex((current) => (current + 1) % sampleInputs.length);
-  }
-
-  function handleBuyItem(itemId) {
-    setGameState((current) => buyShopItem(current, itemId));
-    setBoosting(true);
-    window.setTimeout(() => setBoosting(false), 360);
-  }
-
-  function spawnRpmPop(amount) {
-    const position = POP_POSITIONS[Math.floor(Date.now() / 1000) % POP_POSITIONS.length];
-    const id = `${Date.now()}-${amount}`;
-
-    setFloatingEvents((current) =>
-      [
-        ...current,
-        {
-          id,
-          amount,
-          ...position,
-        },
-      ].slice(-6),
-    );
-
-    window.setTimeout(() => {
-      setFloatingEvents((current) => current.filter((event) => event.id !== id));
-    }, 1300);
-  }
 
   return (
     <main
       className="app-shell"
       data-type={lastType}
-      data-level={landscapeLevel}
+      data-emotion={dominantEmotion}
+      data-level={gameState.level}
       data-tree-stage={treeGrowthStage}
       data-tree-art-stage={treeArtStage}
       aria-label="タービン・ワードクリッカー"
@@ -163,14 +144,12 @@ export default function App() {
           <span className="landscape-tree landscape-tree--far" />
         </div>
       </div>
-
       <section className="word-console" aria-label="言葉の入力">
-        <div className="app-logo" aria-label="Turbine">
-          TURBINE
+        <div>
+          <h1>言葉を流して、タービンを育てる</h1>
         </div>
 
         <form className="word-form" onSubmit={handleSubmit}>
-          <label htmlFor="word-input">言葉を入力してください</label>
           <div className="word-form__row">
             <textarea
               id="word-input"
@@ -187,58 +166,77 @@ export default function App() {
               {isLoading ? "変換中" : "言葉を流す"}
             </button>
           </div>
-
-          <div className="sample-row" aria-label="サンプル入力">
-            <button
-              type="button"
-              onClick={() => {
-                setText(recommendedText);
-                setError("");
-                rotateRecommendedText();
-              }}
-              disabled={isLoading}
-            >
-              AI推奨：「{recommendedText}」
-            </button>
-          </div>
         </form>
 
         <div className="message-row" aria-live="polite">
           {error ? <p className="message message--error">{error}</p> : null}
           {isLoading ? (
-            <p className="message message--loading">言葉を風に変換中</p>
+            <p className="message message--loading">{AI_LOADING_STEPS[loadingStep]}</p>
           ) : null}
         </div>
       </section>
 
       <section className="turbine-layout" aria-label="タービンとエネルギー状態">
-        <Turbine
-          level={gameState.level}
-          energy={gameState.totalEnergy}
-          rpm={gameState.currentRpm}
-          type={lastType}
-          boosting={boosting}
-          floatingEvents={floatingEvents}
-          showReadout={false}
-        />
+        <div className="turbine-main">
+          <div className="sample-row" aria-label="サンプル入力">
+            {sampleInputs.map((sample) => (
+              <button
+                key={sample}
+                type="button"
+                onClick={() => {
+                  setText(sample);
+                  setError("");
+                }}
+                disabled={isLoading}
+              >
+                {sample}
+              </button>
+            ))}
+            <button
+              className="sample-row__refresh"
+              type="button"
+              onClick={() => {
+                setSampleInputs(getRandomSampleInputs(1));
+                setError("");
+              }}
+              disabled={isLoading}
+            >
+              候補を更新
+            </button>
+          </div>
 
-        {levelUpVisible ? (
-          <div className="level-up-banner" role="status" aria-live="polite">
-            LEVEL UP !
+          <Turbine
+            level={gameState.level}
+            energy={gameState.totalEnergy}
+            type={lastType}
+            emotion={dominantEmotion}
+            boosting={boosting}
+          />
+        </div>
+
+        {energyPopup ? (
+          <div
+            key={energyPopup.id}
+            className="energy-popup"
+            data-type={energyPopup.type}
+            style={{
+              "--popup-x": `${energyPopup.x}%`,
+              "--popup-y": `${energyPopup.y}%`,
+            }}
+            aria-live="polite"
+          >
+            +{energyPopup.energy}
           </div>
         ) : null}
 
-        <div className="side-panels">
-          <ShopPanel items={shopItems} onBuy={handleBuyItem} />
-        </div>
+        <EnergyPanel
+          level={gameState.level}
+          totalEnergy={gameState.totalEnergy}
+          energyToNextLevel={progress.remaining}
+          progress={progress.progress}
+          lastResult={gameState.lastAnalysis}
+        />
       </section>
-
-      <EnergyPanel
-        level={gameState.level}
-        currentRpm={gameState.currentRpm}
-        totalEnergy={gameState.totalEnergy}
-        progress={progress.progress}
-      />
     </main>
   );
 }
