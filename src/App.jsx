@@ -237,7 +237,6 @@ export default function App() {
         level={gameState.level}
         currentRpm={gameState.currentRpm}
         totalEnergy={gameState.totalEnergy}
-        energyToNextLevel={progress.remaining}
         progress={progress.progress}
       />
     </main>

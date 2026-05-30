@@ -439,13 +439,40 @@ textarea {
   border-radius: 8px;
   cursor: pointer;
   font-weight: 900;
+  transform: translateZ(0);
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+  will-change: transform;
 }
 
 .word-form button {
   min-height: 54px;
-  background: linear-gradient(135deg, var(--page-accent-warm), var(--page-accent));
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--page-accent-warm) 82%, transparent),
+      color-mix(in srgb, var(--page-accent) 82%, transparent)
+    );
   color: #18212f;
-  box-shadow: 0 12px 24px var(--page-accent-soft);
+  box-shadow:
+    0 12px 24px var(--page-accent-soft),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.word-form button:not(:disabled):hover,
+.sample-row button:not(:disabled):hover {
+  transform: scale(1.02);
+}
+
+.word-form button:not(:disabled):hover {
+  box-shadow:
+    0 16px 32px var(--page-accent-soft),
+    0 0 0 1px color-mix(in srgb, var(--page-accent) 30%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.46);
 }
 
 .word-form button:disabled,
@@ -460,15 +487,31 @@ textarea {
 }
 
 .sample-row button {
-  border: 1px solid rgba(103, 117, 138, 0.16);
-  background: #f8fafc;
-  color: #334155;
+  border: 1px solid color-mix(in srgb, var(--page-accent) 34%, rgba(103, 117, 138, 0.16));
+  background:
+    radial-gradient(circle at 0% 50%, var(--page-accent-soft), transparent 16rem),
+    color-mix(in srgb, var(--page-accent) 13%, rgba(248, 250, 252, 0.78));
+  color: #1f2a3a;
   padding: 10px 12px;
   text-align: left;
   line-height: 1.28;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  box-shadow:
+    0 10px 22px rgba(40, 52, 70, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+}
+
+.sample-row button:not(:disabled):hover {
+  border-color: color-mix(in srgb, var(--page-accent) 58%, rgba(103, 117, 138, 0.16));
+  background:
+    radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--page-accent) 24%, transparent), transparent 16rem),
+    color-mix(in srgb, var(--page-accent) 20%, rgba(248, 250, 252, 0.78));
+  box-shadow:
+    0 14px 30px rgba(40, 52, 70, 0.12),
+    0 0 0 1px color-mix(in srgb, var(--page-accent) 24%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.44);
 }
 
 .message-row {
@@ -832,7 +875,7 @@ textarea {
 
 .energy-panel {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 220px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
   width: 100%;
@@ -850,7 +893,7 @@ textarea {
 
 .energy-panel__stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -858,8 +901,9 @@ textarea {
 .energy-gauge {
   border: 1px solid rgba(103, 117, 138, 0.16);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.76);
-  box-shadow: none;
+  background: rgba(248, 250, 252, 0.58);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+  cursor: default;
 }
 
 .energy-stat {
@@ -877,7 +921,8 @@ textarea {
 .energy-gauge {
   display: grid;
   align-content: center;
-  padding: 14px;
+  min-height: 100%;
+  padding: 16px;
 }
 
 .energy-gauge__track {
@@ -919,10 +964,11 @@ textarea {
   border: 1px solid rgba(103, 117, 138, 0.16);
   border-radius: 8px;
   background:
-    radial-gradient(circle at 100% 0%, var(--page-accent-soft), transparent 11rem),
-    radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--page-accent-warm) 16%, transparent), transparent 9rem),
-    rgba(255, 255, 255, 0.92);
+    radial-gradient(circle at 100% 0%, color-mix(in srgb, var(--page-accent) 18%, transparent), transparent 11rem),
+    radial-gradient(circle at 0% 100%, color-mix(in srgb, var(--page-accent-warm) 14%, transparent), transparent 9rem),
+    rgba(255, 255, 255, 0.74);
   box-shadow: 0 18px 42px rgba(40, 52, 70, 0.12);
+  backdrop-filter: blur(10px);
 }
 
 .shop-panel__title {
@@ -962,15 +1008,37 @@ textarea {
   width: 100%;
   min-height: 62px;
   padding: 8px;
-  border: 1px solid color-mix(in srgb, var(--page-accent) 22%, rgba(103, 117, 138, 0.2));
+  border: 1px solid color-mix(in srgb, var(--page-accent) 36%, rgba(103, 117, 138, 0.2));
   border-radius: 8px;
   background:
-    radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--page-accent) 9%, transparent), transparent 5rem),
-    linear-gradient(135deg, #ffffff, #f8fafc 72%, color-mix(in srgb, var(--page-accent-soft) 42%, #ffffff));
+    radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--page-accent) 17%, transparent), transparent 5rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(248, 250, 252, 0.72) 72%, color-mix(in srgb, var(--page-accent-soft) 54%, rgba(255, 255, 255, 0.76)));
   color: #18212f;
   cursor: pointer;
   text-align: left;
-  box-shadow: 0 8px 18px rgba(40, 52, 70, 0.07);
+  box-shadow:
+    0 8px 18px rgba(40, 52, 70, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+  transform: translateZ(0);
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+  will-change: transform;
+}
+
+.shop-item:not(:disabled):hover {
+  border-color: color-mix(in srgb, var(--page-accent) 62%, rgba(103, 117, 138, 0.2));
+  background:
+    radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--page-accent) 25%, transparent), transparent 5rem),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(248, 250, 252, 0.78) 72%, color-mix(in srgb, var(--page-accent-soft) 70%, rgba(255, 255, 255, 0.82)));
+  box-shadow:
+    0 14px 30px rgba(40, 52, 70, 0.14),
+    0 0 0 1px color-mix(in srgb, var(--page-accent) 26%, transparent),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.46);
+  transform: scale(1.02);
 }
 
 .shop-item__icon {
@@ -995,7 +1063,8 @@ textarea {
 
 .shop-item:disabled {
   cursor: not-allowed;
-  opacity: 0.58;
+  opacity: 0.5;
+  transform: none;
 }
 
 .shop-item__main,
