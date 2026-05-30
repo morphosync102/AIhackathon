@@ -1,6 +1,14 @@
 import "../styles.css";
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const EMOTION_AXES = [
+  { key: "motivation", label: "やる気" },
+  { key: "anger", label: "怒り" },
+  { key: "joy", label: "喜び" },
+  { key: "sadness", label: "悲しみ" },
+  { key: "love", label: "愛" },
+  { key: "anxiety", label: "不安" },
+];
 
 const TYPE_LABELS = {
   "発想": "発想の風",
@@ -19,6 +27,7 @@ export default function EnergyPanel({
 }) {
   const safeProgress = clamp(Number(progress) || 0, 0, 100);
   const resultType = lastResult?.type ?? "静寂";
+  const radarPoints = getRadarPoints(lastResult?.emotionScores);
 
   return (
     <aside className="energy-panel" aria-label="タービン状態">
@@ -58,6 +67,29 @@ export default function EnergyPanel({
               <strong>+{lastResult.energy}</strong>
             </div>
             <p className="last-result__summary">{lastResult.summary}</p>
+            <div className="emotion-radar" aria-label="感情レーダーチャート">
+              <svg className="emotion-radar__chart" viewBox="0 0 140 140" role="img">
+                <title>感情レーダーチャート</title>
+                <polygon className="emotion-radar__grid" points={getGridPoints(100)} />
+                <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(66)} />
+                <polygon className="emotion-radar__grid emotion-radar__grid--inner" points={getGridPoints(33)} />
+                <line x1="70" y1="70" x2="70" y2="10" />
+                <line x1="70" y1="70" x2="122" y2="40" />
+                <line x1="70" y1="70" x2="122" y2="100" />
+                <line x1="70" y1="70" x2="70" y2="130" />
+                <line x1="70" y1="70" x2="18" y2="100" />
+                <line x1="70" y1="70" x2="18" y2="40" />
+                <polygon className="emotion-radar__shape" points={radarPoints} />
+              </svg>
+              <div className="emotion-radar__labels">
+                {EMOTION_AXES.map(({ key, label }) => (
+                  <div className="emotion-radar__row" key={key}>
+                    <span>{label}</span>
+                    <strong>{lastResult.emotionScores?.[key] ?? 0}</strong>
+                  </div>
+                ))}
+              </div>
+            </div>
             <p className="last-result__reason">{lastResult.reason}</p>
             <p className="last-result__comment">{lastResult.comment}</p>
           </>
@@ -75,4 +107,23 @@ export default function EnergyPanel({
       </div>
     </aside>
   );
+}
+
+function getGridPoints(percent) {
+  const radius = 60 * (percent / 100);
+  return EMOTION_AXES.map((_, index) => getPoint(index, radius)).join(" ");
+}
+
+function getRadarPoints(scores = {}) {
+  return EMOTION_AXES.map(({ key }, index) => {
+    const score = clamp(Number(scores[key]) || 0, 0, 100);
+    return getPoint(index, 60 * (score / 100));
+  }).join(" ");
+}
+
+function getPoint(index, radius) {
+  const angle = -Math.PI / 2 + index * ((Math.PI * 2) / EMOTION_AXES.length);
+  const x = 70 + Math.cos(angle) * radius;
+  const y = 70 + Math.sin(angle) * radius;
+  return `${x.toFixed(1)},${y.toFixed(1)}`;
 }

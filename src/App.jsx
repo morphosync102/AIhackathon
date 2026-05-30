@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { analyzeWord } from "./api.js";
 import Turbine from "./components/Turbine.jsx";
 import EnergyPanel from "./components/EnergyPanel.jsx";
@@ -11,6 +11,12 @@ import { getRandomSampleInputs } from "./sampleInputs.js";
 
 const TREE_STAGE_MAX_ENERGY = 930;
 const TREE_STAGE_COUNT = 15;
+const AI_LOADING_STEPS = [
+  "デモAIが言葉を読み取り中",
+  "感情・発想・行動の手がかりを分類中",
+  "風量とタービン成長を計算中",
+];
+const EMOTION_ORDER = ["motivation", "anger", "joy", "sadness", "love", "anxiety"];
 
 function getTreeGrowthStage(totalEnergy) {
   const safeEnergy = Math.max(0, Number(totalEnergy) || 0);
@@ -24,17 +30,53 @@ function getTreeArtStage(treeGrowthStage) {
   return Math.min(5, Math.max(1, Math.ceil(treeGrowthStage / 3)));
 }
 
+function getRandomPopupPosition() {
+  return {
+    x: 18 + Math.random() * 48,
+    y: 18 + Math.random() * 48,
+  };
+}
+
+function getDominantEmotion(scores) {
+  if (!scores) {
+    return "quiet";
+  }
+
+  return EMOTION_ORDER.reduce(
+    (strongest, emotion) => {
+      const value = Number(scores[emotion]) || 0;
+      return value > strongest.value ? { emotion, value } : strongest;
+    },
+    { emotion: "quiet", value: 0 },
+  ).emotion;
+}
+
 export default function App() {
   const [text, setText] = useState("");
   const [gameState, setGameState] = useState(INITIAL_GAME_STATE);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
   const [boosting, setBoosting] = useState(false);
+  const [energyPopup, setEnergyPopup] = useState(null);
   const [error, setError] = useState("");
-  const [sampleInputs, setSampleInputs] = useState(() => getRandomSampleInputs());
+  const [sampleInputs, setSampleInputs] = useState(() => getRandomSampleInputs(1));
   const progress = useMemo(
     () => getNextLevelProgress(gameState.totalEnergy),
     [gameState.totalEnergy],
   );
+
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingStep(0);
+      return undefined;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setLoadingStep((current) => (current + 1) % AI_LOADING_STEPS.length);
+    }, 360);
+
+    return () => window.clearInterval(intervalId);
+  }, [isLoading]);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -47,6 +89,7 @@ export default function App() {
     }
 
     setIsLoading(true);
+    setLoadingStep(0);
     setBoosting(true);
     setError("");
 
@@ -58,8 +101,14 @@ export default function App() {
       });
 
       setGameState((current) => applyWordAnalysis(current, trimmedText, analysis));
+      setEnergyPopup({
+        id: `${Date.now()}-${analysis.energy}`,
+        energy: analysis.energy,
+        type: analysis.type,
+        ...getRandomPopupPosition(),
+      });
       setText("");
-      setSampleInputs(getRandomSampleInputs());
+      setSampleInputs(getRandomSampleInputs(1));
     } catch {
       setError("風が乱れました。もう一度流してください");
     } finally {
@@ -69,6 +118,7 @@ export default function App() {
   }
 
   const lastType = gameState.lastAnalysis?.type || "静寂";
+  const dominantEmotion = getDominantEmotion(gameState.lastAnalysis?.emotionScores);
   const treeGrowthStage = getTreeGrowthStage(gameState.totalEnergy);
   const treeArtStage = getTreeArtStage(treeGrowthStage);
 
@@ -76,6 +126,7 @@ export default function App() {
     <main
       className="app-shell"
       data-type={lastType}
+      data-emotion={dominantEmotion}
       data-level={gameState.level}
       data-tree-stage={treeGrowthStage}
       data-tree-art-stage={treeArtStage}
@@ -117,48 +168,66 @@ export default function App() {
           </div>
         </form>
 
-        <div className="sample-row" aria-label="サンプル入力">
-          {sampleInputs.map((sample) => (
-            <button
-              key={sample}
-              type="button"
-              onClick={() => {
-                setText(sample);
-                setError("");
-              }}
-              disabled={isLoading}
-            >
-              {sample}
-            </button>
-          ))}
-          <button
-            className="sample-row__refresh"
-            type="button"
-            onClick={() => {
-              setSampleInputs(getRandomSampleInputs());
-              setError("");
-            }}
-            disabled={isLoading}
-          >
-            候補を更新
-          </button>
-        </div>
-
         <div className="message-row" aria-live="polite">
           {error ? <p className="message message--error">{error}</p> : null}
           {isLoading ? (
-            <p className="message message--loading">言葉を風に変換中</p>
+            <p className="message message--loading">{AI_LOADING_STEPS[loadingStep]}</p>
           ) : null}
         </div>
       </section>
 
       <section className="turbine-layout" aria-label="タービンとエネルギー状態">
-        <Turbine
-          level={gameState.level}
-          energy={gameState.totalEnergy}
-          type={lastType}
-          boosting={boosting}
-        />
+        <div className="turbine-main">
+          <Turbine
+            level={gameState.level}
+            energy={gameState.totalEnergy}
+            type={lastType}
+            emotion={dominantEmotion}
+            boosting={boosting}
+          />
+
+          <div className="sample-row" aria-label="サンプル入力">
+            {sampleInputs.map((sample) => (
+              <button
+                key={sample}
+                type="button"
+                onClick={() => {
+                  setText(sample);
+                  setError("");
+                }}
+                disabled={isLoading}
+              >
+                {sample}
+              </button>
+            ))}
+            <button
+              className="sample-row__refresh"
+              type="button"
+              onClick={() => {
+                setSampleInputs(getRandomSampleInputs(1));
+                setError("");
+              }}
+              disabled={isLoading}
+            >
+              候補を更新
+            </button>
+          </div>
+        </div>
+
+        {energyPopup ? (
+          <div
+            key={energyPopup.id}
+            className="energy-popup"
+            data-type={energyPopup.type}
+            style={{
+              "--popup-x": `${energyPopup.x}%`,
+              "--popup-y": `${energyPopup.y}%`,
+            }}
+            aria-live="polite"
+          >
+            +{energyPopup.energy}
+          </div>
+        ) : null}
 
         <EnergyPanel
           level={gameState.level}

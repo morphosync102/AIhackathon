@@ -1,4 +1,14 @@
 export const WORD_TYPES = ["発想", "感情", "行動", "混沌", "静寂"];
+export const EMOTION_KEYS = ["motivation", "anger", "joy", "sadness", "love", "anxiety"];
+
+const DEFAULT_EMOTION_SCORES = {
+  motivation: 20,
+  anger: 5,
+  joy: 20,
+  sadness: 8,
+  love: 15,
+  anxiety: 12,
+};
 
 export const MAX_LEVEL = 10;
 
@@ -41,7 +51,18 @@ export function normalizeAnalysis(response) {
     type,
     reason: String(response?.reason || "言葉に含まれる動きから判定しました"),
     comment: String(response?.comment || "風がタービンに届きました"),
+    emotionScores: normalizeEmotionScores(response?.emotionScores),
   };
+}
+
+function normalizeEmotionScores(scores) {
+  return EMOTION_KEYS.reduce((normalized, key) => {
+    const value = Number(scores?.[key]);
+    normalized[key] = Number.isFinite(value)
+      ? Math.min(100, Math.max(0, Math.round(value)))
+      : DEFAULT_EMOTION_SCORES[key];
+    return normalized;
+  }, {});
 }
 
 export function getLevelForEnergy(totalEnergy) {

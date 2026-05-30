@@ -34,12 +34,65 @@ const TYPE_THEMES = {
   },
 };
 
+const EMOTION_THEMES = {
+  motivation: {
+    name: "motivation",
+    accent: "#f59e0b",
+    accentDeep: "#b45309",
+    accentWarm: "#fde68a",
+    glow: "rgba(245, 158, 11, 0.46)",
+  },
+  anger: {
+    name: "anger",
+    accent: "#ef4444",
+    accentDeep: "#b91c1c",
+    accentWarm: "#fb7185",
+    glow: "rgba(239, 68, 68, 0.46)",
+  },
+  joy: {
+    name: "joy",
+    accent: "#facc15",
+    accentDeep: "#ca8a04",
+    accentWarm: "#34d399",
+    glow: "rgba(250, 204, 21, 0.48)",
+  },
+  sadness: {
+    name: "sadness",
+    accent: "#60a5fa",
+    accentDeep: "#2563eb",
+    accentWarm: "#a5b4fc",
+    glow: "rgba(96, 165, 250, 0.42)",
+  },
+  love: {
+    name: "love",
+    accent: "#fb7185",
+    accentDeep: "#be123c",
+    accentWarm: "#f9a8d4",
+    glow: "rgba(251, 113, 133, 0.48)",
+  },
+  anxiety: {
+    name: "anxiety",
+    accent: "#a78bfa",
+    accentDeep: "#6d28d9",
+    accentWarm: "#38bdf8",
+    glow: "rgba(167, 139, 250, 0.46)",
+  },
+  quiet: {
+    name: "quiet",
+    accent: "#93c5fd",
+    accentDeep: "#2563eb",
+    accentWarm: "#34d399",
+    glow: "rgba(147, 197, 253, 0.34)",
+  },
+};
+
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
 
 export default function Turbine({
   level = 1,
   energy = 0,
   type = "静寂",
+  emotion = "quiet",
   boosting = false,
 }) {
   const rotorRef = useRef(null);
@@ -47,12 +100,12 @@ export default function Turbine({
   const speedRef = useRef(0);
   const safeLevel = clamp(Number(level) || 1, 1, 10);
   const safeEnergy = Math.max(0, Number(energy) || 0);
-  const theme = TYPE_THEMES[type] ?? TYPE_THEMES["静寂"];
+  const theme = EMOTION_THEMES[emotion] ?? TYPE_THEMES[type] ?? TYPE_THEMES["静寂"];
   const bladeCount = safeLevel >= 8 ? 12 : safeLevel >= 4 ? 10 : 8;
   const rpm = Math.round(14 + safeLevel * 11 + Math.min(safeEnergy, 220) * 0.22);
   const spinDurationSeconds = clamp(5.8 - safeLevel * 0.38 - safeEnergy / 260, 0.72, 5.4);
   const spinDuration = `${spinDurationSeconds}s`;
-  const size = `${clamp(146 + safeLevel * 11 + safeEnergy * 0.1, 164, 300)}px`;
+  const size = `${clamp(138 + safeLevel * 9 + safeEnergy * 0.07, 154, 250)}px`;
 
   useEffect(() => {
     let frameId;
@@ -91,6 +144,7 @@ export default function Turbine({
     "--spin-duration": spinDuration,
     "--type-accent": theme.accent,
     "--type-accent-deep": theme.accentDeep,
+    "--type-accent-warm": theme.accentWarm ?? theme.accent,
     "--type-glow": theme.glow,
   };
 
@@ -98,10 +152,14 @@ export default function Turbine({
     <section
       className={`turbine-stage level-${safeLevel} ${boosting ? "is-boosting" : ""}`}
       data-type={theme.name}
+      data-emotion={theme.name}
       aria-label={`レベル${safeLevel}の${type}タービン`}
       style={style}
     >
       <div className="wind-streams" aria-hidden="true">
+        <span />
+        <span />
+        <span />
         <span />
         <span />
         <span />
