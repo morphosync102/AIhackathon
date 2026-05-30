@@ -21,6 +21,21 @@ const POP_POSITIONS = [
   { x: 56, y: 64 },
 ];
 
+const TREE_STAGE_MAX_ENERGY = 930;
+const TREE_STAGE_COUNT = 15;
+
+function getTreeGrowthStage(totalEnergy) {
+  const safeEnergy = Math.max(0, Number(totalEnergy) || 0);
+  return Math.min(
+    TREE_STAGE_COUNT,
+    Math.max(1, Math.floor((safeEnergy / TREE_STAGE_MAX_ENERGY) * TREE_STAGE_COUNT) + 1),
+  );
+}
+
+function getTreeArtStage(treeGrowthStage) {
+  return Math.min(5, Math.max(1, Math.ceil(treeGrowthStage / 3)));
+}
+
 export default function App() {
   const [text, setText] = useState("");
   const [sampleIndex, setSampleIndex] = useState(0);
@@ -93,6 +108,9 @@ export default function App() {
 
   const lastType = gameState.lastAnalysis?.type || "静寂";
   const recommendedText = sampleInputs[sampleIndex % sampleInputs.length];
+  const treeGrowthStage = getTreeGrowthStage(gameState.totalEnergy);
+  const treeArtStage = getTreeArtStage(treeGrowthStage);
+  const landscapeLevel = Math.min(10, Math.max(1, gameState.level));
 
   function rotateRecommendedText() {
     setSampleIndex((current) => (current + 1) % sampleInputs.length);
@@ -125,7 +143,27 @@ export default function App() {
   }
 
   return (
-    <main className="app-shell" data-type={lastType} aria-label="タービン・ワードクリッカー">
+    <main
+      className="app-shell"
+      data-type={lastType}
+      data-level={landscapeLevel}
+      data-tree-stage={treeGrowthStage}
+      data-tree-art-stage={treeArtStage}
+      aria-label="タービン・ワードクリッカー"
+    >
+      <div className="landscape" aria-hidden="true">
+        <div className="landscape__sky" />
+        <div className="landscape__rainbow" />
+        <div className="landscape__hills" />
+        <div className="landscape__field" />
+        <div className="landscape__growth" />
+        <div className="landscape__trees">
+          <span className="landscape-tree landscape-tree--left" />
+          <span className="landscape-tree landscape-tree--right" />
+          <span className="landscape-tree landscape-tree--far" />
+        </div>
+      </div>
+
       <section className="word-console" aria-label="言葉の入力">
         <div className="app-logo" aria-label="Turbine">
           TURBINE

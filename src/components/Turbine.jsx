@@ -111,7 +111,6 @@ export default function Turbine({
         <span />
       </div>
 
-      <div className="turbine-orbit" aria-hidden="true" />
       <div className="rpm-pop-layer" aria-hidden="true">
         {floatingEvents.map((event) => (
           <span
@@ -126,18 +125,26 @@ export default function Turbine({
           </span>
         ))}
       </div>
-      <div className="turbine-assembly">
-        <div className="turbine-rotor">
-          {Array.from({ length: bladeCount }).map((_, index) => (
-            <span
-              className="turbine-blade"
-              key={index}
-              style={{ "--blade-angle": `${(360 / bladeCount) * index}deg` }}
-            />
-          ))}
-          <span className="turbine-hub" />
+
+      <div className="turbine-installation">
+        <div className="turbine-orbit" aria-hidden="true" />
+        <div className="turbine-ground-shadow" />
+        <div className="turbine-tower" />
+        <div className="turbine-base" />
+        <div className="turbine-assembly">
+          <div className="turbine-nacelle" />
+          <div className="turbine-rotor">
+            {Array.from({ length: bladeCount }).map((_, index) => (
+              <span
+                className="turbine-blade"
+                key={index}
+                style={{ "--blade-angle": `${(360 / bladeCount) * index}deg` }}
+              />
+            ))}
+            <span className="turbine-hub" />
+          </div>
+          <div className="turbine-core" />
         </div>
-        <div className="turbine-core" />
       </div>
 
       {showReadout ? (
