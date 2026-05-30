@@ -54,7 +54,7 @@ export default function App() {
   const lastType = gameState.lastAnalysis?.type || "静寂";
 
   return (
-    <main className="app-shell" aria-label="タービン・ワードクリッカー">
+    <main className="app-shell" data-type={lastType} aria-label="タービン・ワードクリッカー">
       <section className="word-console" aria-label="言葉の入力">
         <div>
           <p className="eyebrow">Turbine Word Clicker</p>

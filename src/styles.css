@@ -29,6 +29,10 @@ textarea {
 }
 
 .app-shell {
+  --page-accent: #93c5fd;
+  --page-accent-soft: rgba(147, 197, 253, 0.18);
+  --page-accent-deep: #2563eb;
+  --page-accent-warm: #34d399;
   width: min(1120px, calc(100% - 32px));
   min-height: 100vh;
   margin: 0 auto;
@@ -38,19 +42,52 @@ textarea {
   gap: 18px;
 }
 
+.app-shell[data-type="発想"] {
+  --page-accent: #ffd166;
+  --page-accent-soft: rgba(255, 209, 102, 0.22);
+  --page-accent-deep: #b45309;
+  --page-accent-warm: #34d399;
+}
+
+.app-shell[data-type="感情"] {
+  --page-accent: #fb7185;
+  --page-accent-soft: rgba(251, 113, 133, 0.18);
+  --page-accent-deep: #be123c;
+  --page-accent-warm: #f9a8d4;
+}
+
+.app-shell[data-type="行動"] {
+  --page-accent: #34d399;
+  --page-accent-soft: rgba(52, 211, 153, 0.18);
+  --page-accent-deep: #047857;
+  --page-accent-warm: #ffd166;
+}
+
+.app-shell[data-type="混沌"] {
+  --page-accent: #a78bfa;
+  --page-accent-soft: rgba(167, 139, 250, 0.18);
+  --page-accent-deep: #6d28d9;
+  --page-accent-warm: #38bdf8;
+}
+
 .word-console {
   display: grid;
   gap: 14px;
   padding: 18px;
   border: 1px solid rgba(103, 117, 138, 0.16);
+  border-top-color: color-mix(in srgb, var(--page-accent) 52%, white);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.88);
-  box-shadow: 0 16px 38px rgba(40, 52, 70, 0.1);
+  background:
+    radial-gradient(circle at 92% 0%, var(--page-accent-soft), transparent 18rem),
+    rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 16px 38px rgba(40, 52, 70, 0.1),
+    0 0 0 1px var(--page-accent-soft);
 }
 
 .eyebrow {
   margin: 0 0 4px;
-  color: #0f766e;
+  color: var(--page-accent-deep);
   font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0;
@@ -95,8 +132,8 @@ h1 {
 }
 
 .word-form textarea:focus {
-  border-color: #0f766e;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+  border-color: var(--page-accent);
+  box-shadow: 0 0 0 3px var(--page-accent-soft);
 }
 
 .word-form button,
@@ -109,9 +146,9 @@ h1 {
 
 .word-form button {
   min-height: 54px;
-  background: linear-gradient(135deg, #34d399, #ffd166);
+  background: linear-gradient(135deg, var(--page-accent-warm), var(--page-accent));
   color: #18212f;
-  box-shadow: 0 12px 24px rgba(15, 118, 110, 0.18);
+  box-shadow: 0 12px 24px var(--page-accent-soft);
 }
 
 .word-form button:disabled,
@@ -147,7 +184,7 @@ h1 {
 }
 
 .message--loading {
-  color: #0f766e;
+  color: var(--page-accent-deep);
 }
 
 .turbine-layout {
@@ -401,9 +438,9 @@ h1 {
   min-width: 8px;
   border-radius: inherit;
   background:
-    linear-gradient(90deg, #38bdf8, #34d399 46%, #ffd166),
+    linear-gradient(90deg, #38bdf8, var(--page-accent-warm) 46%, var(--page-accent)),
     linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-  box-shadow: 0 0 18px rgba(52, 211, 153, 0.36);
+  box-shadow: 0 0 18px var(--page-accent-soft);
   transition: width 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -415,7 +452,7 @@ h1 {
 }
 
 .energy-gauge__labels strong {
-  color: #0f766e;
+  color: var(--page-accent-deep);
 }
 
 .last-result {
@@ -447,7 +484,7 @@ h1 {
 }
 
 .last-result__header strong {
-  color: #0f766e;
+  color: var(--page-accent-deep);
   font-size: 1.45rem;
   line-height: 1;
 }
@@ -467,7 +504,7 @@ h1 {
 }
 
 .last-result__comment {
-  color: #0f766e;
+  color: var(--page-accent-deep);
   font-weight: 800;
 }
 
