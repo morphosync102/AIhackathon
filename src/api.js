@@ -34,7 +34,7 @@ export async function analyzeWord({ text, currentLevel, currentEnergy }) {
     if (data.source === "gemini") {
       console.info("Gemini API: 使ってる");
     } else {
-      console.info("Gemini API: 使ってない（APIサーバーのフォールバック）");
+      console.info("Gemini API: 使ってない（APIサーバーのフォールバック）", data.error || "");
     }
     return normalizeAnalysis(data);
   } catch (error) {

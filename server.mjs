@@ -57,10 +57,12 @@ app.post("/api/analyze-word", async (req, res) => {
       source: "gemini",
     });
   } catch (error) {
-    console.info("Gemini API: 使ってない（フォールバック）", safeErrorMessage(error));
+    const safeError = getSafeGeminiError(error);
+    console.info("Gemini API: 使ってない（フォールバック）", safeError);
     res.json({
       ...createFallbackResponse(text),
       source: "fallback",
+      error: safeError,
     });
   }
 });
@@ -141,7 +143,12 @@ async function analyzeWithGemini({ text, currentLevel, currentEnergy }) {
     );
 
     if (!response.ok) {
-      throw new Error(`Gemini HTTP ${response.status}`);
+      const responseText = await response.text();
+      throw new GeminiApiError(
+        `Gemini HTTP ${response.status}`,
+        response.status,
+        responseText.slice(0, 500),
+      );
     }
 
     const payload = await response.json();
@@ -151,12 +158,36 @@ async function analyzeWithGemini({ text, currentLevel, currentEnergy }) {
       .trim();
 
     if (!modelText) {
-      throw new Error("Gemini returned no text");
+      throw new GeminiApiError(
+        "Gemini returned no text",
+        null,
+        JSON.stringify({
+          finishReason: payload?.candidates?.[0]?.finishReason,
+          responseId: payload?.responseId,
+        }),
+      );
     }
 
-    return parseModelJson(modelText);
+    try {
+      return parseModelJson(modelText);
+    } catch (error) {
+      throw new GeminiApiError(
+        safeErrorMessage(error),
+        null,
+        modelText.slice(0, 500),
+      );
+    }
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+class GeminiApiError extends Error {
+  constructor(message, status = null, body = "") {
+    super(message);
+    this.name = "GeminiApiError";
+    this.status = status;
+    this.body = body;
   }
 }
 
@@ -308,4 +339,23 @@ function safeErrorMessage(error) {
   }
 
   return error instanceof Error ? error.message : "unknown error";
+}
+
+function getSafeGeminiError(error) {
+  const details = {
+    message: safeErrorMessage(error),
+    model: geminiModel,
+  };
+
+  if (error instanceof GeminiApiError) {
+    if (error.status) {
+      details.status = error.status;
+    }
+
+    if (error.body) {
+      details.body = error.body;
+    }
+  }
+
+  return details;
 }
