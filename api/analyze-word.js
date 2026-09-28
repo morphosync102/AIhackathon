@@ -40,10 +40,18 @@ export default async function handler(req, res) {
 
   try {
     const analysis = await analyzeWordWithGemini({ text, currentLevel, currentEnergy });
-    res.status(200).json(analysis);
+    res.status(200).json({
+      ...analysis,
+      source: "gemini",
+    });
   } catch (error) {
-    console.warn("Gemini analysis failed; returning fallback.", safeErrorMessage(error));
-    res.status(200).json(createFallbackResponse(text));
+    const safeError = safeErrorMessage(error);
+    console.warn("Gemini analysis failed; returning fallback.", safeError);
+    res.status(200).json({
+      ...createFallbackResponse(text),
+      source: "fallback",
+      error: safeError,
+    });
   }
 }
 

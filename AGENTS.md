@@ -50,3 +50,13 @@
 - 実装者: `rapid-prototyping`、`ai-api-integration`、`prompt-engineering`、`demo-polish` を使って最小動作を作る。
 - 相談相手: `persona-first-ui-design`、`hackathon-review`、`testing-demo-safety` を使って方向性と審査員目線を確認する。
 - 2 人で、30 分時点と 60 分時点に「継続、磨き込み、別案を試す」のどれに進むか決める。
+
+<!-- BEGIN DEV-KNOWLEDGE:shared-ai-workflow -->
+## Shared AI workflow
+
+- Treat this `AGENTS.md` as the cross-agent source of truth; Claude-specific notes may remain in `CLAUDE.md`.
+- Codex must obtain an independent Claude PASS before mutation and another PASS for the actual diff before completion, commit, or push. On `NEEDS_USER_INPUT`, ask the user immediately.
+- Use the project `*-context` skill as a router to authoritative specifications and verification commands.
+- Preserve existing changes. Never let the central synchronizer commit or push this child repository.
+- Shared tooling is addressed through `DEV_KNOWLEDGE_ROOT`; do not add machine-specific absolute paths to tracked files.
+<!-- END DEV-KNOWLEDGE:shared-ai-workflow -->
